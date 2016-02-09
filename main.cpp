@@ -238,8 +238,7 @@ int main(int argc, char ** argv){
 		while (not readStructFile.eof()){
             getline(readStructFile, sequence);
 			getline(readStructFile, sequence);
-			getline(readStructFile, sequence2);
-			initVectofreadStructs(sequencesVec, sequence+sequence2);
+			initVectofreadStructs(sequencesVec, sequence);
 		}
 		sort(sequencesVec.begin(), sequencesVec.end(), compareRead());
 		cleanDuplicatesInreadStructs(sequencesVec);
