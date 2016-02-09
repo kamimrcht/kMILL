@@ -218,33 +218,38 @@ void initVectofReads(vector <read>& vec, string sequence){
 
 
 int main(int argc, char ** argv){
-	ifstream readFile("read.fa");
-	string sequence;
-	vector <read> sequencesVec;
-	while (not readFile.eof()){
-		getline(readFile, sequence);
-		getline(readFile, sequence);
-		initVectofReads(sequencesVec, sequence);
-	}
-	sort(sequencesVec.begin(), sequencesVec.end(), compareReadByString);
-	cleanDuplicatesInReads(sequencesVec);
-	setReadsIndex(sequencesVec);
-	uint k = 5;
-	do {
-		vector <edge> right;  // vector of canonical suffixes
-		vector <edge> left; //  vector of canonical prefixes
-		for (uint i(0); i<sequencesVec.size(); ++i){
-			if (sequencesVec[i].sequence.size() > k){
-				fillPrefVector(left, right, sequencesVec[i], k);
-				fillSuffVector(left, right, sequencesVec[i], k);
-			}
+	if (argc < 3){
+		cout << "command line: ./kMILL reads.fasta k" << endl;
+	} else {
+		string fileName = argv[1];
+		uint k = stoi(argv[2]);
+		ifstream readFile(fileName);
+		string sequence;
+		vector <read> sequencesVec;
+		while (not readFile.eof()){
+			getline(readFile, sequence);
+			getline(readFile, sequence);
+			initVectofReads(sequencesVec, sequence);
 		}
-		parseVector(left, right, sequencesVec, k);
-		--k;
-	} while (k>2); 
-	for (uint i(0); i<sequencesVec.size(); ++i){
-		if (not sequencesVec[i].sequence.empty()){
-			cout << sequencesVec[i].index <<  " " <<sequencesVec[i].sequence << endl;
+		sort(sequencesVec.begin(), sequencesVec.end(), compareReadByString);
+		cleanDuplicatesInReads(sequencesVec);
+		setReadsIndex(sequencesVec);
+		do {
+			vector <edge> right;  // vector of canonical suffixes
+			vector <edge> left; //  vector of canonical prefixes
+			for (uint i(0); i<sequencesVec.size(); ++i){
+				if (sequencesVec[i].sequence.size() > k){
+					fillPrefVector(left, right, sequencesVec[i], k);
+					fillSuffVector(left, right, sequencesVec[i], k);
+				}
+			}
+			parseVector(left, right, sequencesVec, k);
+			--k;
+		} while (k>2); 
+		for (uint i(0); i<sequencesVec.size(); ++i){
+			if (not sequencesVec[i].sequence.empty()){
+				cout << sequencesVec[i].index <<  " " <<sequencesVec[i].sequence << endl;
+			}
 		}
 	}
 	return 0;
