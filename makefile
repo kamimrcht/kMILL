@@ -19,10 +19,16 @@ EXEC=kMILL
 
 all: $(EXEC)
 
-kMILL:   main.o  
+kMILL:	main.o	compaction.o	utils.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-main.o: main.cpp  
+utils.o: 	utils.cpp	utils.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+compaction.o:	compaction.cpp	compaction.h	utils.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+main.o:	main.cpp	compaction.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
