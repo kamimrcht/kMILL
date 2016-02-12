@@ -48,3 +48,11 @@ void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec){
 		}
 	}
 }
+
+void removeReadFiles(uint nbBuckets){
+	for (uint i(0); i < nbBuckets; ++i){
+		string s("read_file_" + to_string(i) + ".fa");
+		//~ cout << s << endl;
+		remove(s.c_str());
+	}
+}

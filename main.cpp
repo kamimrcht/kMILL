@@ -17,7 +17,7 @@ int main(int argc, char ** argv){
 		string fileName = argv[1];
 		uint k = stoi(argv[2]);
 		ifstream readStructFile(fileName);
-		uint nbBuckets(3);
+		uint nbBuckets(10);
 		vector <ofstream> outFiles(nbBuckets);
 		ofstream out("out.fa");
 		string sequence,sequence2;
@@ -25,13 +25,7 @@ int main(int argc, char ** argv){
 		openBuckets(outFiles);
 		createsReadBuckets(nbBuckets, readStructFile, outFiles);
 		fillSortCleanBuckets(nbBuckets, sequencesVec);
-		while (not readStructFile.eof()){
-            getline(readStructFile, sequence);
-			getline(readStructFile, sequence);
-			initVectofreadStructs(sequencesVec, sequence);
-		}
-		sort(sequencesVec.begin(), sequencesVec.end(), compareRead());
-		cleanDuplicatesInreadStructs(sequencesVec);
+		removeReadFiles(nbBuckets);
 		setreadStructsIndex(sequencesVec);
 		do {
             cout<<k<<" Please be patient..."<<endl;
