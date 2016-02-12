@@ -4,6 +4,9 @@
 #include <vector>
 #include <algorithm>
 
+#ifndef COMPACTION
+#define COMPACTION
+
 using namespace std;
 
 struct edge{
@@ -36,3 +39,6 @@ void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 void cleanDuplicatesInreadStructs(vector <readStruct>& vec);
 void setreadStructsIndex(vector <readStruct>& vec);
 void initVectofreadStructs(vector <readStruct>& vec, string sequence);
+
+
+#endif

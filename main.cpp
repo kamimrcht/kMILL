@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include "compaction.h"
-
+#include "readAndSortInputFile.h"
 
 using namespace std;
 
@@ -17,9 +17,14 @@ int main(int argc, char ** argv){
 		string fileName = argv[1];
 		uint k = stoi(argv[2]);
 		ifstream readStructFile(fileName);
-        ofstream out("out.fa");
+		uint nbBuckets(3);
+		vector <ofstream> outFiles(nbBuckets);
+		ofstream out("out.fa");
 		string sequence,sequence2;
 		vector <readStruct> sequencesVec;
+		openBuckets(outFiles);
+		createsReadBuckets(nbBuckets, readStructFile, outFiles);
+		fillSortCleanBuckets(nbBuckets, sequencesVec);
 		while (not readStructFile.eof()){
             getline(readStructFile, sequence);
 			getline(readStructFile, sequence);

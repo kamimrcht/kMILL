@@ -19,16 +19,19 @@ EXEC=kMILL
 
 all: $(EXEC)
 
-kMILL:	main.o	compaction.o	utils.o
+kMILL:	main.o	compaction.o	utils.o	readAndSortInputFile.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 utils.o: 	utils.cpp	utils.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
+readAndSortInputFile.o:	readAndSortInputFile.cpp	readAndSortInputFile.h	compaction.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
 compaction.o:	compaction.cpp	compaction.h	utils.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-main.o:	main.cpp	compaction.h
+main.o:	main.cpp	compaction.h	readAndSortInputFile.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
