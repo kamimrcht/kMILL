@@ -12,7 +12,7 @@ using namespace std;
 
 
 uint64_t transformStringToHash(string read);
-void createsReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstream>& outFiles);
+void createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstream>& outFiles);
 void openBuckets(vector<ofstream>& outFiles);
 void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec);
 void removeReadFiles(uint nbBuckets);
