@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "readAndSortInputFile.h"
 #include "compaction.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -18,14 +19,15 @@ uint64_t transformStringToHash(string read){
 void createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstream>& outFiles){
 	while (not readStructFile.eof()){
 		//~ cout<<1<<endl;
-		string sequence;
+		string sequence, canonSequence;
         getline(readStructFile, sequence);
 		getline(readStructFile, sequence);
-		if (not sequence.empty()){
+		canonSequence = getCanonical(sequence);
+		if (not canonSequence.empty()){
 			//~ cout<<sequence<<endl;
-			uint64_t key(transformStringToHash(sequence));
+			uint64_t key(transformStringToHash(canonSequence));
 			int numFile(key % nbBuckets);
-			outFiles[numFile] << sequence << endl;
+			outFiles[numFile] << canonSequence << endl;
 		}
 	}
 }

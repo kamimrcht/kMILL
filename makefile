@@ -25,7 +25,7 @@ kMILL:	main.o	compaction.o	utils.o	readAndSortInputFile.o
 utils.o: 	utils.cpp	utils.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-readAndSortInputFile.o:	readAndSortInputFile.cpp	readAndSortInputFile.h	compaction.h
+readAndSortInputFile.o:	readAndSortInputFile.cpp	readAndSortInputFile.h	compaction.h	utils.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 compaction.o:	compaction.cpp	compaction.h	utils.h
