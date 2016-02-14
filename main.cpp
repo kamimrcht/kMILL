@@ -17,38 +17,38 @@ int main(int argc, char ** argv){
 		string fileName = argv[1];
 		uint k = stoi(argv[2]);
 		ifstream readStructFile(fileName);
-		uint nbBuckets(1);
+		uint nbBuckets(30);
 		vector <ofstream> outFiles(nbBuckets);
-		ofstream out("out1.fa");
+		ofstream out("out_k"+to_string(k)+ "_" + fileName +".fa");
 		string sequence,sequence2;
 		vector <readStruct> sequencesVec;
 		openBuckets(outFiles);
 		createReadBuckets(nbBuckets, readStructFile, outFiles);
 		fillSortCleanBuckets(nbBuckets, sequencesVec);
-		for (uint i(0); i<sequencesVec.size();++i){
-			out << sequencesVec[i].sequence << endl;
-		}
-		
-		//~ removeReadFiles(nbBuckets);
-		//~ setreadStructsIndex(sequencesVec);
-		//~ do {
-            //~ cout<<k<<" Please be patient..."<<endl;
-			//~ vector <edge> right;  // vector of canonical suffixes
-			//~ vector <edge> left; //  vector of canonical prefixes
-			//~ for (uint i(0); i<sequencesVec.size(); ++i){
-				//~ if (sequencesVec[i].sequence.size() > k){
-					//~ fillPrefVector(left, right, sequencesVec[i], k);
-					//~ fillSuffVector(left, right, sequencesVec[i], k);
-				//~ }
-			//~ }
-			//~ parseVector(left, right, sequencesVec, k);
-			//~ --k;
-		//~ } while (k>2);
-		//~ for (uint i(0); i<sequencesVec.size(); ++i){
-			//~ if (not sequencesVec[i].sequence.empty()){
-				//~ out<<sequencesVec[i].sequence << endl;
-			//~ }
+		removeReadFiles(nbBuckets);
+		//~ sort(sequencesVec.begin(), sequencesVec.end(), compareRead());
+		setreadStructsIndex(sequencesVec);
+		//~ for (uint i(0); i<sequencesVec.size();++i){
+			//~ out << sequencesVec[i].index << sequencesVec[i].sequence << endl;
 		//~ }
+		do {
+            cout<<k<<" Please be patient..."<<endl;
+			vector <edge> right;  // vector of canonical suffixes
+			vector <edge> left; //  vector of canonical prefixes
+			for (uint i(0); i<sequencesVec.size(); ++i){
+				if (sequencesVec[i].sequence.size() > k){
+					fillPrefVector(left, right, sequencesVec[i], k);
+					fillSuffVector(left, right, sequencesVec[i], k);
+				}
+			}
+			parseVector(left, right, sequencesVec, k);
+			--k;
+		} while (k>2);
+		for (uint i(0); i<sequencesVec.size(); ++i){
+			if (not sequencesVec[i].sequence.empty()){
+				out<<sequencesVec[i].sequence << endl;
+			}
+		}
 	}
 	return 0;
 }

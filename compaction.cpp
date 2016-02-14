@@ -20,12 +20,35 @@ edge nSuffix(uint n, uint index, const string& sequence){
 }
 
 
-vector<edge> removeDuplicates(const vector<edge>& vect){
+//~ vector<edge> removeDuplicates(const vector<edge>& vect){
+	//~ vector<edge> vectResult;
+	//~ for (uint i(0); i< vect.size(); ++i){
+		//~ if (i == vect.size()-1 or vect[i].sequence!=vect[i+1].sequence){
+			//~ vectResult.push_back(vect[i]);
+		//~ }
+	//~ }
+	//~ return vectResult;
+//~ }
+
+
+vector<edge> removeNotSingles(const vector<edge>& vect){
 	vector<edge> vectResult;
-	for (uint i(0); i< vect.size(); ++i){
-		if (i == vect.size()-1 or vect[i].sequence!=vect[i+1].sequence){
-			vectResult.push_back(vect[i]);
+	uint i(0);
+	while (i < vect.size()){
+		if (i == 0){
+			if (vect[i].sequence != vect[i+1].sequence){
+				vectResult.push_back(vect[i]);
+			}
+		} else if (i == vect.size()-1){
+			if (vect[i].sequence != vect[i-1].sequence){
+				vectResult.push_back(vect[i]);
+			}
+		} else {
+			if (vect[i].sequence != vect[i+1].sequence and vect[i].sequence != vect[i-1].sequence){
+				vectResult.push_back(vect[i]);
+			}
 		}
+		++i;
 	}
 	return vectResult;
 }
@@ -60,6 +83,29 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k){
 
 
 
+//~ //  If two readStructs are compacted the result replaces one of them, the other becomes "" and keeps the index of its mate.
+//~ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k){
+	//~ if (not vec[indexreadStruct1].sequence.empty()){
+		//~ if (not vec[indexreadStruct2].sequence.empty()){
+			//~ string c = compaction(vec[indexreadStruct1], vec[indexreadStruct2], k);
+			//~ if (not c.empty()){
+				//~ vec[indexreadStruct1] = {vec[indexreadStruct1].index, c};
+				//~ vec[indexreadStruct2].index = vec[indexreadStruct1].index;
+				//~ vec[indexreadStruct2].sequence = "";
+			//~ }
+		//~ } else {
+			//~ compactInVector(vec, indexreadStruct1, indexreadStruct2, k); //  each time a sequence is empty, the index leads to the sequence it's been compacted in-> recursive call until we find the sequence
+		//~ }
+	//~ } else {
+		//~ if (not vec[indexreadStruct2].sequence.empty()){
+			//~ compactInVector(vec, indexreadStruct1, indexreadStruct2, k);
+		//~ } else {
+			//~ compactInVector(vec, indexreadStruct1, indexreadStruct2, k);
+		//~ }
+	//~ }
+//~ }
+
+
 //  If two readStructs are compacted the result replaces one of them, the other becomes "" and keeps the index of its mate.
 void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k){
 	if (not vec[indexreadStruct1].sequence.empty()){
@@ -84,16 +130,26 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 
 
 
+
 //  checks from the suffixes and prefixes of pairs of readStructs of a vector if they can be compacted
 void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, int k){
 	sort(left.begin(), left.end(), compareEdgeByString);
 	sort(right.begin(), right.end(), compareEdgeByString);
-	vector<edge> leftSingles = removeDuplicates(left);
-	vector<edge> rightSingles = removeDuplicates(right);
+	vector<edge> leftSingles;
+	vector<edge> rightSingles;
+	if (left.size()>1){
+		leftSingles = removeNotSingles(left);
+	} else {
+		leftSingles = left;
+	}
+	if (right.size()>1){
+		rightSingles = removeNotSingles(right);
+	} else {
+		rightSingles = right;
+	}
 	uint indexL(0),indexR(0);
 	while (indexL < leftSingles.size() and indexR < rightSingles.size()){
 		if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
-			//~ cout << "compaction of " << rightSingles[indexR].sequence<< " from readStruct " << leftSingles[indexL].index <<  " and readStruct " << rightSingles[indexR].index<<endl;
 			compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k);
 			++indexL;
 			++indexR;
@@ -153,6 +209,9 @@ void setreadStructsIndex(vector <readStruct>& vec){
 	for (uint i(0); i<vec.size(); ++i){
 		if (not vec[i].sequence.empty()){
 			vec[i].index = i;
+			//~ cout << vec[i].index << endl;
+		//~ } else {
+			//~ cout << "empty" << endl;
 		}
 	}
 }

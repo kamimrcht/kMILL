@@ -17,10 +17,12 @@ uint64_t transformStringToHash(string read){
 
 void createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstream>& outFiles){
 	while (not readStructFile.eof()){
+		//~ cout<<1<<endl;
 		string sequence;
         getline(readStructFile, sequence);
 		getline(readStructFile, sequence);
 		if (not sequence.empty()){
+			//~ cout<<sequence<<endl;
 			uint64_t key(transformStringToHash(sequence));
 			int numFile(key % nbBuckets);
 			outFiles[numFile] << sequence << endl;
@@ -35,26 +37,23 @@ void openBuckets(vector<ofstream>& outFiles){
 }
 
 void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec){
+	uint index(0);
 	for (uint nbFileOut(0); nbFileOut < nbBuckets ; ++ nbFileOut){
 		vector <readStruct> seqVecFile;
 		string seq;
 		ifstream readFile("read_file_" + to_string(nbFileOut) + ".fa");
 		while (not readFile.eof()){
-			 getline(readFile, seq);
-			 if (not seq.empty()){
-				 initVectofreadStructs(seqVecFile, seq);
-			 }
+			getline(readFile, seq);
+			if (not seq.empty()){
+					seqVecFile.push_back({0, seq});
+			}
 		}
-		//~ for (uint i(0); i < seqVecFile.size(); ++i){
-			//~ cout << seqVecFile[i].sequence << endl;
-		//~ }
 		sort(seqVecFile.begin(), seqVecFile.end(), compareRead());
 		cleanDuplicatesInreadStructs(seqVecFile);
-		//~ for (uint i(0); i < seqVecFile.size(); ++i){
-			//~ cout << seqVecFile[i].sequence << endl;
-		//~ }
 		for (uint i(0); i < seqVecFile.size(); ++i){
 			if (not seqVecFile[i].sequence.empty()){
+				seqVecFile[i].index = index;
+				++index;
 				sequencesVec.push_back(seqVecFile[i]);
 			}
 		}
@@ -64,7 +63,6 @@ void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec){
 void removeReadFiles(uint nbBuckets){
 	for (uint i(0); i < nbBuckets; ++i){
 		string s("read_file_" + to_string(i) + ".fa");
-		//~ cout << s << endl;
 		remove(s.c_str());
 	}
 }
