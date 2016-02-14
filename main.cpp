@@ -20,17 +20,17 @@ int main(int argc, char ** argv){
 		uint nbBuckets(30);
 		vector <ofstream> outFiles(nbBuckets);
 		ofstream out("out_k"+to_string(k)+ "_" + fileName +".fa");
+		ofstream outF("debug_out_k_"+to_string(k)+ "_" + fileName +".fa");
 		string sequence,sequence2;
 		vector <readStruct> sequencesVec;
 		openBuckets(outFiles);
 		createReadBuckets(nbBuckets, readStructFile, outFiles);
 		fillSortCleanBuckets(nbBuckets, sequencesVec);
 		removeReadFiles(nbBuckets);
-		//~ sort(sequencesVec.begin(), sequencesVec.end(), compareRead());
 		setreadStructsIndex(sequencesVec);
-		//~ for (uint i(0); i<sequencesVec.size();++i){
-			//~ out << sequencesVec[i].index << sequencesVec[i].sequence << endl;
-		//~ }
+		for (uint i(0); i<sequencesVec.size();++i){
+			outF << sequencesVec[i].index << sequencesVec[i].sequence << endl;
+		}
 		do {
             cout<<k<<" Please be patient..."<<endl;
 			vector <edge> right;  // vector of canonical suffixes

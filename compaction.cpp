@@ -20,17 +20,6 @@ edge nSuffix(uint n, uint index, const string& sequence){
 }
 
 
-//~ vector<edge> removeDuplicates(const vector<edge>& vect){
-	//~ vector<edge> vectResult;
-	//~ for (uint i(0); i< vect.size(); ++i){
-		//~ if (i == vect.size()-1 or vect[i].sequence!=vect[i+1].sequence){
-			//~ vectResult.push_back(vect[i]);
-		//~ }
-	//~ }
-	//~ return vectResult;
-//~ }
-
-
 vector<edge> removeNotSingles(const vector<edge>& vect){
 	vector<edge> vectResult;
 	uint i(0);
@@ -82,30 +71,6 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k){
 }
 
 
-
-//~ //  If two readStructs are compacted the result replaces one of them, the other becomes "" and keeps the index of its mate.
-//~ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k){
-	//~ if (not vec[indexreadStruct1].sequence.empty()){
-		//~ if (not vec[indexreadStruct2].sequence.empty()){
-			//~ string c = compaction(vec[indexreadStruct1], vec[indexreadStruct2], k);
-			//~ if (not c.empty()){
-				//~ vec[indexreadStruct1] = {vec[indexreadStruct1].index, c};
-				//~ vec[indexreadStruct2].index = vec[indexreadStruct1].index;
-				//~ vec[indexreadStruct2].sequence = "";
-			//~ }
-		//~ } else {
-			//~ compactInVector(vec, indexreadStruct1, indexreadStruct2, k); //  each time a sequence is empty, the index leads to the sequence it's been compacted in-> recursive call until we find the sequence
-		//~ }
-	//~ } else {
-		//~ if (not vec[indexreadStruct2].sequence.empty()){
-			//~ compactInVector(vec, indexreadStruct1, indexreadStruct2, k);
-		//~ } else {
-			//~ compactInVector(vec, indexreadStruct1, indexreadStruct2, k);
-		//~ }
-	//~ }
-//~ }
-
-
 //  If two readStructs are compacted the result replaces one of them, the other becomes "" and keeps the index of its mate.
 void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k){
 	if (not vec[indexreadStruct1].sequence.empty()){
@@ -127,8 +92,6 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 		}
 	}
 }
-
-
 
 
 //  checks from the suffixes and prefixes of pairs of readStructs of a vector if they can be compacted
@@ -164,7 +127,6 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 }
 
 
-
 // fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs
 void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, int k){
 	edge prefix = nPrefix(k, seq.index, seq.sequence);
@@ -177,7 +139,6 @@ void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 }
 
 
-
 // fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs
 void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, int k){
 	edge suffix = nSuffix(k, seq.index, seq.sequence);
@@ -188,7 +149,6 @@ void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 		vecLeft.push_back({suffix.index, canonSuffix});
 	}
 }
-
 
 
 void cleanDuplicatesInreadStructs(vector <readStruct>& vec){
@@ -215,7 +175,6 @@ void setreadStructsIndex(vector <readStruct>& vec){
 		}
 	}
 }
-
 
 
 void initVectofreadStructs(vector <readStruct>& vec, string sequence){

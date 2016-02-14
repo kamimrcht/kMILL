@@ -32,11 +32,13 @@ void createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstrea
 	}
 }
 
+
 void openBuckets(vector<ofstream>& outFiles){
 	for (uint nbFileOut(0); nbFileOut < outFiles.size() ; ++ nbFileOut){
 		outFiles[nbFileOut].open("read_file_" + to_string(nbFileOut) + ".fa");
 	}
 }
+
 
 void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec){
 	uint index(0);
@@ -61,6 +63,7 @@ void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec){
 		}
 	}
 }
+
 
 void removeReadFiles(uint nbBuckets){
 	for (uint i(0); i < nbBuckets; ++i){
