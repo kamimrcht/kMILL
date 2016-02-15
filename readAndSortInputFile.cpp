@@ -7,27 +7,27 @@
 #include "compaction.h"
 #include "utils.h"
 
+
 using namespace std;
 
 
-uint64_t transformStringToHash(string read){
-	hash<string> readHash;
+hash<string> readHash;
+
+
+uint64_t transformStringToHash(const string& read){
 	return readHash(read);
 }
 
 
 void createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstream>& outFiles){
+	string sequence, canonSequence;
 	while (not readStructFile.eof()){
-		//~ cout<<1<<endl;
-		string sequence, canonSequence;
         getline(readStructFile, sequence);
 		getline(readStructFile, sequence);
 		canonSequence = getCanonical(sequence);
 		if (not canonSequence.empty()){
-			//~ cout<<sequence<<endl;
 			uint64_t key(transformStringToHash(canonSequence));
-			int numFile(key % nbBuckets);
-			outFiles[numFile] << canonSequence << endl;
+			outFiles[key % nbBuckets] << canonSequence << endl;
 		}
 	}
 }
@@ -42,14 +42,15 @@ void openBuckets(vector<ofstream>& outFiles){
 
 void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec){
 	uint index(0);
+	vector <readStruct> seqVecFile;
+	string seq;
 	for (uint nbFileOut(0); nbFileOut < nbBuckets ; ++ nbFileOut){
-		vector <readStruct> seqVecFile;
-		string seq;
+		seqVecFile={};
 		ifstream readFile("read_file_" + to_string(nbFileOut) + ".fa");
 		while (not readFile.eof()){
 			getline(readFile, seq);
 			if (not seq.empty()){
-					seqVecFile.push_back({0, seq});
+				seqVecFile.push_back({0, seq});
 			}
 		}
 		sort(seqVecFile.begin(), seqVecFile.end(), compareRead());
