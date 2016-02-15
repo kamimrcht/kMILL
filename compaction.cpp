@@ -96,6 +96,8 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 
 //  checks from the suffixes and prefixes of pairs of readStructs of a vector if they can be compacted
 void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, int k){
+//~ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, int k, ofstream& of){
+
 	sort(left.begin(), left.end(), compareEdgeByString);
 	sort(right.begin(), right.end(), compareEdgeByString);
 	vector<edge> leftSingles;
@@ -110,6 +112,7 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 	} else {
 		rightSingles = right;
 	}
+	//~ of << leftSingles.size() << " " << rightSingles.size() << endl;
 	uint indexL(0),indexR(0);
 	while (indexL < leftSingles.size() and indexR < rightSingles.size()){
 		if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
