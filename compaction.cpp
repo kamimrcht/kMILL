@@ -66,6 +66,7 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k){
 	} else if (beg1.sequence == rBeg2.sequence){ //  overlap RF
 		return rSeq2 + seq1.sequence.substr(k);
 	} else {
+		cout<<"fail..."<<endl;
 		return "";
 	}
 }
@@ -95,7 +96,8 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 
 
 //  checks from the suffixes and prefixes of pairs of readStructs of a vector if they can be compacted
-void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, int k){
+void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k){
+	uint compaction(0);
 	sort(left.begin(), left.end(), compareEdgeByString);
 	sort(right.begin(), right.end(), compareEdgeByString);
 	vector<edge> leftSingles;
@@ -114,21 +116,23 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 	while (indexL < leftSingles.size() and indexR < rightSingles.size()){
 		if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
 			compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k);
+			++compaction;
 			++indexL;
 			++indexR;
 		} else {
-			if (leftSingles[indexL].sequence <= rightSingles[indexR].sequence){
+			if (leftSingles[indexL].sequence < rightSingles[indexR].sequence){
 				++indexL;
 			} else {
 				++indexR;
 			}
 		}
 	}
+	// cout<<"compactions: "<<compaction<<endl;
 }
 
 
 // fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs
-void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, int k){
+void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k){
 	edge prefix = nPrefix(k, seq.index, seq.sequence);
 	string canonPrefix = getCanonical(prefix.sequence);
 	if (prefix.sequence == canonPrefix){
@@ -140,7 +144,7 @@ void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 
 
 // fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs
-void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, int k){
+void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k){
 	edge suffix = nSuffix(k, seq.index, seq.sequence);
 	string canonSuffix = getCanonical(suffix.sequence);
 	if (suffix.sequence == canonSuffix){
@@ -158,8 +162,9 @@ void cleanDuplicatesInreadStructs(vector <readStruct>& vec){
 		string temp = vec[i].sequence;
 		if (temp == previousSeq){
 			vec[i].sequence = "";
+		}else{
+			previousSeq = temp;
 		}
-		previousSeq = temp;
 		++i;
 	}
 }
@@ -177,7 +182,7 @@ void setreadStructsIndex(vector <readStruct>& vec){
 }
 
 
-void initVectofreadStructs(vector <readStruct>& vec, string sequence){
+void initVectofreadStructs(vector <readStruct>& vec, const string& sequence){
 	if (not sequence.empty()){
 		vec.push_back({0, sequence});
 	}
