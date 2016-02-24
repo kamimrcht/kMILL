@@ -56,9 +56,12 @@ int main(int argc, char ** argv){
 			auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 			cout<<"k: "<<k<<": left.size "<<left.size()<<" right.size "<<right.size()<<" Step took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec "<<endl;
 		} while (k>2);
+		uint header(1);
 		for (uint i(0); i<sequencesVec.size(); ++i){
 			if (not sequencesVec[i].sequence.empty()){
+				out<< ">seq_" + to_string(header) << endl;
 				out<<sequencesVec[i].sequence << endl;
+				++header;
 			}
 		}
 		auto endend=chrono::system_clock::now();auto waitedFor2=endend-startChrono;

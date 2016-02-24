@@ -137,15 +137,15 @@ void createinputlm(uint lr,uint k){
 			}
 		}
 		kmer+=c;
-		//~ if(rand()%100==0){
-			//~ if(kmer<revComp(kmer)){
-				//~ out<<">lol"<<endl;
-				//~ out<<kmer<<endl;
-			//~ }else{
-				//~ out<<">lol"<<endl;
-				//~ out<<revComp(kmer)<<endl;
-			//~ }
-		//~ }
+		if(rand()%100==0){
+			if(kmer<revComp(kmer)){
+				out<<">lol"<<endl;
+				out<<kmer<<endl;
+			}else{
+				out<<">lol"<<endl;
+				out<<revComp(kmer)<<endl;
+			}
+		}
 	}
 }
 
