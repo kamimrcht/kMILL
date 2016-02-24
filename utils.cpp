@@ -137,21 +137,20 @@ void createinputlm(uint lr,uint k){
 			}
 		}
 		kmer+=c;
-		if(rand()%100==0){
-		// if(true){
-			if(kmer<revComp(kmer)){
-				out<<">lol"<<endl;
-				out<<kmer<<endl;
-			}else{
-				out<<">lol"<<endl;
-				out<<revComp(kmer)<<endl;
-			}
-		}
+		//~ if(rand()%100==0){
+			//~ if(kmer<revComp(kmer)){
+				//~ out<<">lol"<<endl;
+				//~ out<<kmer<<endl;
+			//~ }else{
+				//~ out<<">lol"<<endl;
+				//~ out<<revComp(kmer)<<endl;
+			//~ }
+		//~ }
 	}
 }
 
 
-void prefectsReadsFromRef(const string& refName,uint length,uint nbRead){
+void perfectsReadsFromRef(const string& refName,uint length,uint nbRead){
 	string ref;
 	ofstream out("simul",ios::trunc);
 	ifstream in(refName);

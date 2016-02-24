@@ -21,11 +21,19 @@ struct readStruct{
 };
 
 
+struct compareEdge{
+    bool operator()(const edge& seqL, const edge& seqR){
+        return seqL.sequence <seqR.sequence;
+    }
+};
+
+
 struct compareRead{
     bool operator()(const readStruct& seqL, const readStruct& seqR){
         return seqL.sequence <seqR.sequence;
     }
 };
+
 
 edge nPrefix(uint n, uint index, const string& sequence);
 edge nSuffix(uint n, uint index, const string& sequence);
