@@ -32,6 +32,18 @@ void createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstrea
 	}
 }
 
+//test
+void createReadBuckets2ndPass(uint nbBuckets, const vector <string>& sequences2ndPass, vector <ofstream>& outFiles){
+	string sequence, canonSequence;
+	for (uint i(0); i<sequences2ndPass.size(); ++i){
+		canonSequence = getCanonical(sequences2ndPass[i]);
+		if (not canonSequence.empty()){
+			uint64_t key(transformStringToHash(canonSequence));
+			outFiles[key % nbBuckets] << canonSequence << endl;
+		}
+	}
+}
+
 
 void openBuckets(vector<ofstream>& outFiles){
 	for (uint nbFileOut(0); nbFileOut < outFiles.size() ; ++ nbFileOut){

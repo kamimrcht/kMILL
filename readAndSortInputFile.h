@@ -16,5 +16,6 @@ void createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstrea
 void openBuckets(vector<ofstream>& outFiles);
 void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec);
 void removeReadFiles(uint nbBuckets);
-
+//test
+void createReadBuckets2ndPass(uint nbBuckets, const vector <string>& sequences2ndPass, vector <ofstream>& outFiles);
 #endif
