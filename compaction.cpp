@@ -20,7 +20,7 @@ edge nSuffix(uint n, uint index, const string& sequence){
 }
 
 
-vector<edge> removeNotSingles(const vector<edge>& vect){
+vector<edge> removeNotSingles(const vector<edge>& vect, uint k){
 	vector<edge> vectResult;
 	uint i(0);
 	while (i < vect.size()){
@@ -76,12 +76,47 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k){
 void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k){
 	if (not vec[indexreadStruct1].sequence.empty()){
 		if (not vec[indexreadStruct2].sequence.empty()){
+			/*db*/
+			//~ if (vec[indexreadStruct1].sequence == "AGCACCGGTGATCATGTTTTTAACATAGTCGGCGTGCCCCGGGCAGTCTACGTGTGCGTAGTGACGGGTCGGGGTGTCGTATTCAACGTGAGAAGTGTTG"){
+				//~ cout << "*****************************" << vec[indexreadStruct1].index << " " << indexreadStruct2 << " " << k << endl;
+			//~ } else if (vec[indexreadStruct2].sequence == "AGCACCGGTGATCATGTTTTTAACATAGTCGGCGTGCCCCGGGCAGTCTACGTGTGCGTAGTGACGGGTCGGGGTGTCGTATTCAACGTGAGAAGTGTTG"){
+				//~ cout << "*****************************" << vec[indexreadStruct2].index << " " << indexreadStruct1 << " " << k << endl;
+			//~ }
+			//~ if ( indexreadStruct1 == 175398 or indexreadStruct2 == 175398 or indexreadStruct1 == 754701 or indexreadStruct2 == 754701){
+				//~ cout << indexreadStruct1 << " " << vec[indexreadStruct1].sequence << endl;
+				//~ cout << indexreadStruct2 << " " << vec[ indexreadStruct2].sequence << endl;
+				//~ }
+			/*end*/
+			/*db*/
+				//~ if(vec[indexreadStruct1].sequence=="AGCACCGGTGATCATGTTTTTAACATAGTCGGCGTGCCCCGGGCAGTCTACGTGTGCGTAGTGACGGGTCGGGGTGTCGTATTCAACGTGAGAAGTGTTG"){
+					//~ cout << "seq in read " << indexreadStruct1 << endl;
+				//~ } else if(vec[indexreadStruct2].sequence=="AGCACCGGTGATCATGTTTTTAACATAGTCGGCGTGCCCCGGGCAGTCTACGTGTGCGTAGTGACGGGTCGGGGTGTCGTATTCAACGTGAGAAGTGTTG") {
+					//~ cout << "seq in read " << indexreadStruct2 << endl;
+				//~ }
+				if (indexreadStruct1== 4461 or indexreadStruct2== 4461){
+					cout << "*****" << endl;
+					cout <<  " " <<vec[indexreadStruct1].index << " " << vec[indexreadStruct1].sequence << endl;
+					cout <<" " <<vec[indexreadStruct2].index << " "  <<vec[indexreadStruct2].sequence << endl;
+					cout << "compaction" << indexreadStruct1  << " " << indexreadStruct2 << endl;
+					
+				}
+			/*end*/
 			string c = compaction(vec[indexreadStruct1], vec[indexreadStruct2], k);
+			/*db*/
+			//~ if (){
+			//~ }
+			/*end*/
 			if (not c.empty()){
 				vec[indexreadStruct1] = {vec[indexreadStruct1].index, c};
 				vec[indexreadStruct2].index = vec[indexreadStruct1].index;
 				vec[indexreadStruct2].sequence = "";
 			}
+			/*db*/
+			if ( indexreadStruct2==4461 ){
+				cout <<  "change d'index " <<vec[indexreadStruct1].index << " " << vec[indexreadStruct1].sequence << endl;
+				cout <<" " <<vec[indexreadStruct2].index << " "  <<vec[indexreadStruct2].sequence << endl;
+			}
+			/*end*/
 		} else {
 			compactInVector(vec, indexreadStruct1, vec[indexreadStruct2].index, k); //  each time a sequence is empty, the index leads to the sequence it's been compacted in-> recursive call until we find the sequence
 		}
@@ -97,26 +132,36 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 
 //  checks from the suffixes and prefixes of pairs of readStructs of a vector if they can be compacted
 void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k){
-	uint compaction(0);
+	uint compac(0);
 	sort(left.begin(), left.end(), compareEdge());
 	sort(right.begin(), right.end(), compareEdge());
 	vector<edge> leftSingles;
 	vector<edge> rightSingles;
 	if (left.size()>1){
-		leftSingles = removeNotSingles(left);
+		leftSingles = removeNotSingles(left,k);
 	} else {
 		leftSingles = left;
 	}
 	if (right.size()>1){
-		rightSingles = removeNotSingles(right);
+		rightSingles = removeNotSingles(right,k);
 	} else {
 		rightSingles = right;
 	}
 	uint indexL(0),indexR(0);
 	while (indexL < leftSingles.size() and indexR < rightSingles.size()){
 		if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
-			compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k);
-			++compaction;
+			if (leftSingles[indexL].index != rightSingles[indexR].index){
+				/* debug */
+				if (leftSingles[indexL].index ==  1437 or rightSingles[indexR].index ==1437){
+//>seq_754701
+					cout << "compaction: " << k << " " << leftSingles[indexL].index << " " << leftSingles[indexL].sequence  << " " << rightSingles[indexR].index << " " << rightSingles[indexR].sequence << endl;
+				}
+				/* end */
+				/*db*/
+				/*end*/
+				compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k);
+				++compac;
+			}
 			++indexL;
 			++indexR;
 		} else {

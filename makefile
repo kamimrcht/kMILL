@@ -1,6 +1,6 @@
-CC=/usr/bin/g++
-#CC=g++
-CFLAGS=  -Wall  -Ofast -std=c++11 -march=native -pthread
+#~ CC=/usr/bin/g++
+CC=g++
+CFLAGS=  -Wall  -Ofast -std=c++11 -march=native -pthread -fmax-errors=3 -flto
 LDFLAGS=-pthread
 
 
