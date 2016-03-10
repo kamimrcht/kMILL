@@ -61,7 +61,7 @@ string revComp(const string& seq){
 
 
 string getCanonical(const string& seq){
-	return min(seq,  revComp(seq));
+	return min(seq,revComp(seq));
 }
 
 

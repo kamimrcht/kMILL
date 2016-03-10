@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "utils.h"
 #include "compaction.h"
+#include "ograph.h"
 
 
 using namespace std;
@@ -98,7 +99,6 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 					cout <<  " " <<vec[indexreadStruct1].index << " " << vec[indexreadStruct1].sequence << endl;
 					cout <<" " <<vec[indexreadStruct2].index << " "  <<vec[indexreadStruct2].sequence << endl;
 					cout << "compaction" << indexreadStruct1  << " " << indexreadStruct2 << endl;
-					
 				}
 			/*end*/
 			string c = compaction(vec[indexreadStruct1], vec[indexreadStruct2], k);
@@ -179,6 +179,8 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k){
 	edge prefix = nPrefix(k, seq.index, seq.sequence);
 	string canonPrefix = getCanonical(prefix.sequence);
+	cout<<"pre"<<endl;
+	cout<<prefix.sequence<<" "<<canonPrefix<<endl;
 	if (prefix.sequence == canonPrefix){
 		vecLeft.push_back({prefix.index, canonPrefix});
 	} else {
@@ -191,6 +193,8 @@ void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k){
 	edge suffix = nSuffix(k, seq.index, seq.sequence);
 	string canonSuffix = getCanonical(suffix.sequence);
+	cout<<"suf"<<endl;
+	cout<<suffix.sequence<<" "<<canonSuffix<<endl;
 	if (suffix.sequence == canonSuffix){
 		vecRight.push_back({suffix.index, canonSuffix});
 	} else {

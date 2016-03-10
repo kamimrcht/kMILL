@@ -7,8 +7,11 @@
 #include "compaction.h"
 #include "readAndSortInputFile.h"
 #include "utils.h"
+#include "ograph.h"
 #include <unordered_set>
 #include <unordered_map>
+
+
 using namespace std;
 
 
@@ -43,15 +46,27 @@ int main(int argc, char ** argv){
 		uint size(sequencesVec.size());
 		if (k>0) {
 			do {
+				graph3 graphCompactor(k,0,1,sequencesVec.size());
 				auto startChrono=chrono::system_clock::now();
 				vector <edge> right;  // vector of canonical suffixes
 				vector <edge> left; //  vector of canonical prefixes
 				for (uint i(0); i<sequencesVec.size(); ++i){
+					graphCompactor.addtuple(make_tuple(sequencesVec[i].sequence,0,0));
 					if (sequencesVec[i].sequence.size() > k){
 						fillPrefVector(left, right, sequencesVec[i], k);
 						fillSuffVector(left, right, sequencesVec[i], k);
 					}
 				}
+				graphCompactor.debruijn();
+				cout<<"malfoy"<<endl;
+				for (uint i(0); i<sequencesVec.size(); ++i){
+					cout<<graphCompactor.unitigs[i]<<endl;
+				}
+				cout<<"camille"<<endl;
+				for (uint i(0); i<sequencesVec.size(); ++i){
+					cout<<sequencesVec[i].sequence<<endl;
+				}
+				cout<<"end"<<endl;
 				parseVector(left, right, sequencesVec, k);
 				--k;
 				auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
@@ -89,12 +104,12 @@ int main(int argc, char ** argv){
 							read.index = sequencesVec[i].index;
 							read.sequence = getCanonical(sequencesVec[i].sequence.substr(w));
 							//~ if (read.index == 754701){
-								
+
 								//~ cout << w<< "else " << sequencesVec[i].sequence.size()<< endl;
 								//~ cout << "window" << read.sequence << endl;
 							//~ }
 						}
-						
+
 						++w;
 						if (not read.sequence.empty()){
 							auto readFound = initSet.find(read.sequence);
@@ -125,8 +140,8 @@ int main(int argc, char ** argv){
 			//~ uint gg(0);
 			for (uint i(0); i<sequencesVec.size(); ++i){
 				if (not sequencesVec[i].sequence.empty()){
-					out<< ">seq_" + to_string(sequencesVec[i].index) << endl;  
-					out<<sequencesVec[i].sequence << endl;  
+					out<< ">seq_" + to_string(sequencesVec[i].index) << endl;
+					out<<sequencesVec[i].sequence << endl;
 					++header;
 				}
 			}
@@ -155,10 +170,10 @@ int main(int argc, char ** argv){
 					//~ out2nd<< ">seq_" + to_string(header2) << endl;
 					//~ out2nd<<sequencesVec2ndPass[i].sequence << endl;
 					//~ ++header;
-					
+
 				//~ }
 			//~ }
-			
+
 			auto endend=chrono::system_clock::now();auto waitedFor2=endend-startChrono;
 			cout<<"whole process took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor2).count())<<" sec"<<endl;
 			/* debug */

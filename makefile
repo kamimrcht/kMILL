@@ -1,6 +1,6 @@
-#~ CC=/usr/bin/g++
-CC=g++
-CFLAGS=  -Wall  -Ofast -std=c++11 -march=native -pthread -fmax-errors=3 -flto
+CC=/usr/bin/g++
+#CC=g++
+CFLAGS=  -Wall  -Ofast -std=c++11 -march=native -pthread -fmax-errors=3 -flto -pipe
 LDFLAGS=-pthread
 
 
@@ -19,10 +19,13 @@ EXEC=kMILL
 
 all: $(EXEC)
 
-kMILL:	main.o	compaction.o	utils.o	readAndSortInputFile.o
+kMILL:	main.o	compaction.o	utils.o	readAndSortInputFile.o ograph.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 utils.o: 	utils.cpp	utils.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+ograph.o: 	ograph.cpp	utils.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 readAndSortInputFile.o:	readAndSortInputFile.cpp	readAndSortInputFile.h	compaction.h	utils.h
@@ -31,7 +34,7 @@ readAndSortInputFile.o:	readAndSortInputFile.cpp	readAndSortInputFile.h	compacti
 compaction.o:	compaction.cpp	compaction.h	utils.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-main.o:	main.cpp	compaction.h	readAndSortInputFile.h
+main.o:	main.cpp	compaction.h	readAndSortInputFile.h ograph.o
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
