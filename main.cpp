@@ -46,32 +46,82 @@ int main(int argc, char ** argv){
 		uint size(sequencesVec.size());
 		if (k>0) {
 			do {
+				bool diff = false;
 				graph3 graphCompactor(k,0,1,sequencesVec.size());
 				auto startChrono=chrono::system_clock::now();
 				vector <edge> right;  // vector of canonical suffixes
 				vector <edge> left; //  vector of canonical prefixes
+				//~ cout << "k " << k << endl;
 				for (uint i(0); i<sequencesVec.size(); ++i){
+					if (getCanonical(sequencesVec[i].sequence) == "AAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT"){
+						cout << "sexxxx" << endl;
+						cin.get();
+					}
+					if (getCanonical(sequencesVec[i].sequence) == "AAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT"){
+						cout << "sexxxx" << endl;
+						cin.get();
+					}
 					graphCompactor.addtuple(make_tuple(sequencesVec[i].sequence,0,0));
 					if (sequencesVec[i].sequence.size() > k){
+						
 						fillPrefVector(left, right, sequencesVec[i], k);
 						fillSuffVector(left, right, sequencesVec[i], k);
 					}
 				}
 				graphCompactor.debruijn();
-				cout<<"malfoy"<<endl;
-				for (uint i(0); i<sequencesVec.size(); ++i){
-					cout<<graphCompactor.unitigs[i]<<endl;
-				}
-				cout<<"camille"<<endl;
-				for (uint i(0); i<sequencesVec.size(); ++i){
-					cout<<sequencesVec[i].sequence<<endl;
-				}
-				cout<<"end"<<endl;
+				//~ cout<<"malfoy"<<endl;
+				//~ for (uint i(0); i<graphCompactor.size(); ++i){
+					//~ cout<<graphCompactor.unitigs[i]<<endl;
+				//~ }
+				
 				parseVector(left, right, sequencesVec, k);
-				--k;
+				//~ cout<<"camille"<<endl;
+				//~ for (uint i(0); i<sequencesVec.size(); ++i){
+					//~ cout<<sequencesVec[i].sequence<<endl;
+				//~ }
+				//~ cout<<"end"<<endl;
+
+
+				unordered_set <string> malfoySet;
+				uint sizeM(0);
+				
+				for (uint i(0); i < graphCompactor.size(); ++i){
+					
+					string seq = getCanonical(graphCompactor.unitigs[i]);
+					if (not seq.empty()){
+						malfoySet.insert(seq);
+						sizeM += seq.size();
+						//~ cout << seq.size() << endl;
+					}
+				}
+
+				uint sizeC(0);
+				for (uint i(0); i<sequencesVec.size(); ++i){
+					string seq = getCanonical(sequencesVec[i].sequence);
+					sizeC += seq.size();
+					if (not (seq.empty() or malfoySet.count(seq) or seq.size()<= k)){
+						cout << "***diff***" << seq << " "<<  seq.size() <<endl;
+						diff = true;
+						//~ cout << seq.size() << endl;
+						cin.get();
+					}
+				}
+				cout <<  "size gphe " << graphCompactor.size() << endl;
+				cout << sizeM << " " << sizeC << endl;
+				if (diff){
+					cin.get();
+				}
+
+				
 				auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 				cout<<"k: "<<k<<": left.size "<<left.size()<<" right.size "<<right.size()<<" Step took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec "<<endl;
+				--k;
+				cin.get();
 			} while (k>3);
+
+			
+
+			
 			/* debug */
 			ifstream readStructFile2(fileName);
 			unordered_set <string> initSet;

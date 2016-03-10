@@ -102,12 +102,19 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 				}
 			/*end*/
 			string c = compaction(vec[indexreadStruct1], vec[indexreadStruct2], k);
-			/*db*/
-			//~ if (){
-			//~ }
+			/* db*/
+			string lol = getCanonical(c) ;
+			if (lol == "ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG"){
+				cout << vec[indexreadStruct1].sequence << endl;
+				cout << vec[indexreadStruct2].sequence << endl;
+				cout << "c" << endl;
+			}
+
 			/*end*/
 			if (not c.empty()){
+
 				vec[indexreadStruct1] = {vec[indexreadStruct1].index, c};
+				
 				vec[indexreadStruct2].index = vec[indexreadStruct1].index;
 				vec[indexreadStruct2].sequence = "";
 			}
@@ -149,14 +156,17 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 	}
 	uint indexL(0),indexR(0);
 	while (indexL < leftSingles.size() and indexR < rightSingles.size()){
+			/* debug */
+			string debug(getCanonical(leftSingles[indexL].sequence));
+			//~ cout << "lol " << debug << endl;
+			//~ if ( debug ==  "AAATGGATAACTGGATAGTGAAATAATGCGGACACAGTGGCCCTCTCCGGCAAAACTTAATCTGTTTTTATACATTACCGGTCAGCGTGCGGATGGTTA" or rightSingles[indexR].index ==1437){
+//~ //>seq_754701
+				//~ cout << "compaction: " << k << " " << leftSingles[indexL].index << " " << leftSingles[indexL].sequence  << " " << rightSingles[indexR].index << " " << rightSingles[indexR].sequence << endl;
+			//~ }
+			/* end */
 		if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
 			if (leftSingles[indexL].index != rightSingles[indexR].index){
-				/* debug */
-				if (leftSingles[indexL].index ==  1437 or rightSingles[indexR].index ==1437){
-//>seq_754701
-					cout << "compaction: " << k << " " << leftSingles[indexL].index << " " << leftSingles[indexL].sequence  << " " << rightSingles[indexR].index << " " << rightSingles[indexR].sequence << endl;
-				}
-				/* end */
+
 				/*db*/
 				/*end*/
 				compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k);
@@ -179,8 +189,11 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k){
 	edge prefix = nPrefix(k, seq.index, seq.sequence);
 	string canonPrefix = getCanonical(prefix.sequence);
-	cout<<"pre"<<endl;
-	cout<<prefix.sequence<<" "<<canonPrefix<<endl;
+	if (canonPrefix ==  "AAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTG"){
+		cout << "pref" << endl;
+	}
+	//~ cout<<"pre"<<endl;
+	//~ cout<<prefix.sequence<<" "<<canonPrefix<<endl;
 	if (prefix.sequence == canonPrefix){
 		vecLeft.push_back({prefix.index, canonPrefix});
 	} else {
@@ -193,8 +206,11 @@ void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k){
 	edge suffix = nSuffix(k, seq.index, seq.sequence);
 	string canonSuffix = getCanonical(suffix.sequence);
-	cout<<"suf"<<endl;
-	cout<<suffix.sequence<<" "<<canonSuffix<<endl;
+	//~ cout<<"suf"<<endl;
+	if (canonSuffix == "AAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTG"){
+		cout << "suff" << endl;
+	}
+	//~ cout<<suffix.sequence<<" "<<canonSuffix<<endl;
 	if (suffix.sequence == canonSuffix){
 		vecRight.push_back({suffix.index, canonSuffix});
 	} else {

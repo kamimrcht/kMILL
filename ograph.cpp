@@ -294,57 +294,124 @@ void graph3::compaction(uint iL,  uint iR){
 	// if(iR==lol  and found){
 	// 	cout<<"compactionR !"<<endl;
 	// }
-	uint s1(unitigs[iL].size()),s2(unitigs[iR].size());
-	bool b1(isNumber(unitigs[iL][0])),b2(isNumber(unitigs[iR][0]));
-	if(b1 and b2){return compaction(stoi(unitigs[iL]),stoi(unitigs[iR]));}
-	if(b1){return compaction(stoi(unitigs[iL]),iR);}
-	if(b2){return compaction(iL,stoi(unitigs[iR]));}
-
-	kmer beg1(beg2int128(unitigs[iL]));
-	kmer end2(end2int128(unitigs[iR]));
-	if(beg1==end2){
-		unitigs[iR]+=(unitigs[iL].substr(k));
-		// if((iL==lol or iR==lol) and found){
-		// 	cout<<unitigs[iR]<<endl;
-		// 	lol=iR;
-		// }
-		unitigs[iL]=to_string(iR);
-		return;
+	/* db*/
+	if (unitigs[iR]== "CAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" or unitigs[iL]=="CAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" ){
+		cout << "elela" << endl;
 	}
+	//~ if (unitigs[iR]== "" or unitigs[iL]==""){
+		//~ cout << "elela" << endl;
+	//~ }
+	/*end*/
+	if (iL != iR){
+		uint s1(unitigs[iL].size()),s2(unitigs[iR].size());
+		bool b1(isNumber(unitigs[iL][0])),b2(isNumber(unitigs[iR][0]));
+		if(b1 and b2){return compaction(stoi(unitigs[iL]),stoi(unitigs[iR]));}
+		if(b1){return compaction(stoi(unitigs[iL]),iR);}
+		if(b2){return compaction(iL,stoi(unitigs[iR]));}
 
-	kmer endrc2(beg2int128rc(unitigs[iR]));
-	if(beg1==endrc2){
-		reverseinplace2(unitigs[iR]);
-		unitigs[iR]+=(unitigs[iL].substr(k));
-		// 	if((iL==lol or iR==lol) and found){
-		// 	cout<<unitigs[iR]<<endl;
-		// 	lol=iR;
-		// }
-		unitigs[iL]=to_string(iR);
-		return;
-	}
+		kmer beg1(beg2int128(unitigs[iL]));
+		kmer end2(end2int128(unitigs[iR]));
 
-	kmer beg2(rcb(endrc2));
-	kmer end1(end2int128(unitigs[iL]));
-	if(end1==beg2){
-		unitigs[iL]+=(unitigs[iR].substr(k));
-		// 	if((iL==lol or iR==lol) and found){
-		// 	cout<<unitigs[iL]<<endl;
-		// 	lol=iL;
-		// }
-		unitigs[iR]=to_string(iL);
-		return;
-	}
+		if(beg1==end2){
+			/* db*/
+			if (unitigs[iR]== "ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG"  or unitigs[iL]=="ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" ){
+				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
+				if (unitigs[iL] == unitigs[iR]){
+					cout << "BORDEL" << endl;
+				}
+			}
+			if (unitigs[iR]== "CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT" or unitigs[iL]=="CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT"){
+				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
+				if (unitigs[iL] == unitigs[iR]){
+					cout << "BORDEL" << endl;
+				}
+			}
+			/*end*/
+			unitigs[iR]+=(unitigs[iL].substr(k));
+			// if((iL==lol or iR==lol) and found){
+			// 	cout<<unitigs[iR]<<endl;
+			// 	lol=iR;
+			// }
+			unitigs[iL]=to_string(iR);
+			return;
+		}
 
-	kmer begrc2(rcb(end2));
-	if(end1==begrc2){
-		unitigs[iL]+=(reverseinplace(unitigs[iR]).substr(k));
-		// if((iL==lol or iR==lol) and found){
-		// 	cout<<unitigs[iL]<<endl;
-		// 	lol=iL;
-		// }
-		unitigs[iR]=to_string(iL);
-		return;
+		kmer endrc2(beg2int128rc(unitigs[iR]));
+		if(beg1==endrc2){
+			/* db*/
+			if (unitigs[iR]== "ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG"  or unitigs[iL]=="ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" ){
+				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
+				if (unitigs[iL] == unitigs[iR]){
+					cout << "BORDEL" << endl;
+				}
+			}
+			if (unitigs[iR]== "CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT" or unitigs[iL]=="CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT"){
+				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
+				if (unitigs[iL] == unitigs[iR]){
+					cout << "BORDEL" << endl;
+				}
+			}
+			/*end*/
+			reverseinplace2(unitigs[iR]);
+			unitigs[iR]+=(unitigs[iL].substr(k));
+			// 	if((iL==lol or iR==lol) and found){
+			// 	cout<<unitigs[iR]<<endl;
+			// 	lol=iR;
+			// }
+			unitigs[iL]=to_string(iR);
+			return;
+		}
+
+		kmer beg2(rcb(endrc2));
+		kmer end1(end2int128(unitigs[iL]));
+		if(end1==beg2){
+			/* db*/
+			if (unitigs[iR]== "ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG"  or unitigs[iL]=="ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" ){
+				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
+				if (unitigs[iL] == unitigs[iR]){
+					cout << "BORDEL" << endl;
+				}
+			}
+			if (unitigs[iR]== "CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT" or unitigs[iL]=="CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT"){
+				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
+				if (unitigs[iL] == unitigs[iR]){
+					cout << "BORDEL" << endl;
+				}
+			}
+			/*end*/
+			unitigs[iL]+=(unitigs[iR].substr(k));
+			// 	if((iL==lol or iR==lol) and found){
+			// 	cout<<unitigs[iL]<<endl;
+			// 	lol=iL;
+			// }
+			unitigs[iR]=to_string(iL);
+			return;
+		}
+
+		kmer begrc2(rcb(end2));
+		if(end1==begrc2){
+			/* db*/
+			if (unitigs[iR]== "ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG"  or unitigs[iL]=="ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" ){
+				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
+				if (unitigs[iL] == unitigs[iR]){
+					cout << "BORDEL" << endl;
+				}
+			}
+			if (unitigs[iR]== "CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT" or unitigs[iL]=="CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT"){
+				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
+				if (unitigs[iL] == unitigs[iR]){
+					cout << "BORDEL" << endl;
+				}
+			}
+			/*end*/
+			unitigs[iL]+=(reverseinplace(unitigs[iR]).substr(k));
+			// if((iL==lol or iR==lol) and found){
+			// 	cout<<unitigs[iL]<<endl;
+			// 	lol=iL;
+			// }
+			unitigs[iR]=to_string(iL);
+			return;
+		}
 	}
 	// cout<<"wut"<<endl;
 }
@@ -356,6 +423,11 @@ void graph3::debruijn(){
 	uint iL(0),iR(0);
 	kmerIndice kL,kR;
 	while(iL!=left.size() and iR!=right.size()){
+		//~ if (unitigs[iL] == "AAAATGGATAACTGGATAGTGAAATAATGCGGACACAGTGGCCCTCTCCGGCAAAACTTAATCTGTTTTTATACATTACCGGTCAGCGTGCGGATGGTTA" or unitigs[iR] == "AAAATGGATAACTGGATAGTGAAATAATGCGGACACAGTGGCCCTCTCCGGCAAAACTTAATCTGTTTTTATACATTACCGGTCAGCGTGCGGATGGTTA" or  unitigs[iL] == "TAACCATCCGCACGCTGACCGGTAATGTATAAAAACAGATTAAGTTTTGCCGGAGAGGGCCACTGTGTCCGCATTATTTCACTATCCAGTTATCCATTTT"  or  unitigs[iR] ==  "TAACCATCCGCACGCTGACCGGTAATGTATAAAAACAGATTAAGTTTTGCCGGAGAGGGCCACTGTGTCCGCATTATTTCACTATCCAGTTATCCATTTT"){
+			//~ cout << "yes" << endl;
+			//~ cin.get();
+			
+		//~ }
 		kL=left[iL];
 		kR=right[iR];
 		if(kL.kmmer==kR.kmmer){
@@ -369,7 +441,7 @@ void graph3::debruijn(){
 					go=false;
 					while(right[++iR].kmmer==kR.kmmer){}
 				}
-			if(go){compaction(kL.indice,kR.indice);}
+			if(go and kL.indice != kR.indice){compaction(kL.indice,kR.indice);}
 		}else{
 			if(kL.kmmer<kR.kmmer){
 				while(left[++iL].kmmer==kL.kmmer){}
