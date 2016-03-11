@@ -114,7 +114,7 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 			if (not c.empty()){
 
 				vec[indexreadStruct1] = {vec[indexreadStruct1].index, c};
-				
+
 				vec[indexreadStruct2].index = vec[indexreadStruct1].index;
 				vec[indexreadStruct2].sequence = "";
 			}

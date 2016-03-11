@@ -1,8 +1,10 @@
 #include "ograph.h"
+#include "utils.h"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <thread>
+
 
 
 /*
@@ -52,187 +54,8 @@ uint chartoint(char c){
 		d ^= 1;
 	return d;
 }
-//
-//
-// uint64_t stringtoint(const string& str){
-// 	uint64_t res(0);
-// 	for(uint i(0);i<str.size();i++){
-// 		res<<=2;
-// 		res+=chartoint(str[i]);
-// 	}
-// 	return res;
-// }
-//
-//
-// uint64_t stringtointc(const string& str){
-// 	uint64_t res(0);
-// 	for(int32_t i(str.size()-1);i>=0;i--){
-// 		res<<=2;
-// 		res+=3-chartoint(str[i]);
-// 	}
-// 	return res;
-// }
-//
-//
-// kmer stringtoint128(const string& str){
-// 	kmer res(0);
-// 	for(uint i(0);i<str.size();i++){
-// 		res<<=2;
-// 		res+=chartoint(str[i]);
-// 	}
-// 	return res;
-// }
-//
 
-// kmer stringtointc128(const string& str){
-// 	kmer res(0);
-// 	for(int32_t i(str.size()-1);i>=0;i--){
-// 		res<<=2;
-// 		res+=3-chartoint(str[i]);
-// 	}
-// 	return res;
-// }
-//
-//
-// uint64_t string2intmin(const string& str){
-// 	return min(stringtoint(str),stringtointc(str));
-// }
-//
-//
-// bool accordtomin(int min, int left_or_right_min){
-// 	if(min == -1){
-// 		return true;
-// 	}
-//
-// 	if(left_or_right_min==min)
-// 		return true;
-//
-// 	return false;
-//
-// }
-//
-//
-// string compaction2(const string& seq1,const string& seq2, int k){
-// 	size_t s1(seq1.size()),s2(seq2.size());
-// 	if(s1==0){return seq2;}
-// 	if(s2==0){return seq1;}
-//
-// 	string rc2(reversecompletment(seq2));
-// 	string rc1(reversecompletment(seq1));
-//
-// 	if(seq1.substr(0,k)==seq2.substr(s2-k,k)){
-// 		return seq2+seq1.substr(k);
-// 	}else{
-// 		if(rc2.substr(s2-k,k)==seq1.substr(0,k)){
-// 			return rc2+seq1.substr(k);
-// 		}
-// 	}
-//
-// 	if(seq2.substr(0,k)==seq1.substr(s1-k,k)){
-// 		return seq1+seq2.substr(k);
-// 	}else{
-// 		if(rc1.substr(s1-k,k)==seq2.substr(0,k)){
-// 			return rc1+seq2.substr(k);
-// 		}
-// 	}
-//
-// 	if(rc1.substr(0,k)==seq2.substr(s2-k,k)){
-// 			return seq2+rc1.substr(k);
-// 	}else{
-// 		if(rc2.substr(s2-k,k)==rc1.substr(0,k)){
-// 			return rc2+rc1.substr(k);
-// 		}
-// 	}
-//
-// 	if(rc2.substr(0,k)==seq1.substr(s1-k,k)){
-// 		return seq1+rc2.substr(k);
-// 	}else{
-// 		if(rc1.substr(s1-k,k)==rc2.substr(0,k)){
-// 			return rc1+rc2.substr(k);
-// 		}
-// 	}
-// 	return seq1;
-// }
-//
-//
-// string compaction(const string& seq1,const string& seq2, int k){
-// 	int s1(seq1.size()),s2(seq2.size());
-// 	if(s1==0 or s2==0){
-// 		return seq1;
-// 	}
-// 	string beg1(seq1.substr(0,k));
-// 	if(beg1==seq2.substr(s2-k,k)){
-// 		return seq2+seq1.substr(k);
-// 	}
-//
-// 	string end1(seq1.substr(s1-k,k));
-// 	if(seq2.substr(0,k)==end1){
-// 		return seq1+seq2.substr(k);
-// 	}
-//
-// 	string rc2(reversecompletment(seq2));
-// 	if(rc2.substr(s2-k,k)==beg1){
-// 		return rc2+seq1.substr(k);
-// 	}
-//
-// 	if(rc2.substr(0,k)==end1){
-// 		return seq1+rc2.substr(k);
-// 	}
-// 	return seq1;
-// }
-//
-//
-// string compactionBeg(const string& seq1,const string& seq2, int k){
-// 	int s2(seq2.size());
-// 	string rc2(reversecompletment(seq2));
-// 	//~ string rc1(reversecompletment(seq1));
-// 	string beg(seq1.substr(0,k));
-// 	string begRc(reversecompletment(beg));
-//
-// 	if(beg==seq2.substr(s2-k,k)){
-// 		return seq2+seq1.substr(k);
-// 	}else{
-// 		if(beg==rc2.substr(s2-k,k)){
-// 			return rc2+seq1.substr(k);
-// 		}
-// 	}
-//
-// 	if(begRc==seq2.substr(0,k)){
-// 		return rc2.substr(0,s2-k)+seq1;
-// 	}else{
-// 		if(begRc==rc2.substr(0,k)){
-// 			return seq2.substr(0,s2-k)+seq1;
-// 		}
-// 	}
-// 	return seq1;
-// }
-//
-//
-// string compactionEnd(const string& seq1,const string& seq2, int k){
-// 	int s1(seq1.size()),s2(seq2.size());
-// 	string rc2(reversecompletment(seq2));
-// 	string end(seq1.substr(s1-k,k));
-// 	string endRc(reversecompletment(end));
-//
-// 	if(end==seq2.substr(0,k)){
-// 		return seq1+seq2.substr(k);
-// 	}else{
-// 		if(end==rc2.substr(0,k)){
-// 			return seq1+rc2.substr(k);
-// 		}
-// 	}
-//
-// 	if(endRc==seq2.substr(s2-k,k)){
-// 		return seq1+rc2.substr(k);
-// 	}else{
-// 		if(endRc==rc2.substr(s2-k,k)){
-// 			return seq1+seq2.substr(k);
-// 		}
-// 	}
-// 	return seq1;
-// }
-//
-//
+
 bool isNumber(char c){return (c<64);}
 
 
@@ -288,21 +111,8 @@ kmer graph3::rcb(kmer min){
 
 
 void graph3::compaction(uint iL,  uint iR){
-	// if(iL==lol and found ){
-	// 	cout<<"compactionL !"<<endl;
-	// }
-	// if(iR==lol  and found){
-	// 	cout<<"compactionR !"<<endl;
-	// }
-	/* db*/
-	if (unitigs[iR]== "CAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" or unitigs[iL]=="CAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" ){
-		cout << "elela" << endl;
-	}
-	//~ if (unitigs[iR]== "" or unitigs[iL]==""){
-		//~ cout << "elela" << endl;
-	//~ }
-	/*end*/
 	if (iL != iR){
+		cout<<"go compaction !!!!!!!!!!!!!!!!"<<endl;
 		uint s1(unitigs[iL].size()),s2(unitigs[iR].size());
 		bool b1(isNumber(unitigs[iL][0])),b2(isNumber(unitigs[iR][0]));
 		if(b1 and b2){return compaction(stoi(unitigs[iL]),stoi(unitigs[iR]));}
@@ -313,51 +123,15 @@ void graph3::compaction(uint iL,  uint iR){
 		kmer end2(end2int128(unitigs[iR]));
 
 		if(beg1==end2){
-			/* db*/
-			if (unitigs[iR]== "ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG"  or unitigs[iL]=="ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" ){
-				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
-				if (unitigs[iL] == unitigs[iR]){
-					cout << "BORDEL" << endl;
-				}
-			}
-			if (unitigs[iR]== "CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT" or unitigs[iL]=="CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT"){
-				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
-				if (unitigs[iL] == unitigs[iR]){
-					cout << "BORDEL" << endl;
-				}
-			}
-			/*end*/
 			unitigs[iR]+=(unitigs[iL].substr(k));
-			// if((iL==lol or iR==lol) and found){
-			// 	cout<<unitigs[iR]<<endl;
-			// 	lol=iR;
-			// }
 			unitigs[iL]=to_string(iR);
 			return;
 		}
 
 		kmer endrc2(beg2int128rc(unitigs[iR]));
 		if(beg1==endrc2){
-			/* db*/
-			if (unitigs[iR]== "ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG"  or unitigs[iL]=="ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" ){
-				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
-				if (unitigs[iL] == unitigs[iR]){
-					cout << "BORDEL" << endl;
-				}
-			}
-			if (unitigs[iR]== "CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT" or unitigs[iL]=="CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT"){
-				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
-				if (unitigs[iL] == unitigs[iR]){
-					cout << "BORDEL" << endl;
-				}
-			}
-			/*end*/
 			reverseinplace2(unitigs[iR]);
 			unitigs[iR]+=(unitigs[iL].substr(k));
-			// 	if((iL==lol or iR==lol) and found){
-			// 	cout<<unitigs[iR]<<endl;
-			// 	lol=iR;
-			// }
 			unitigs[iL]=to_string(iR);
 			return;
 		}
@@ -365,50 +139,14 @@ void graph3::compaction(uint iL,  uint iR){
 		kmer beg2(rcb(endrc2));
 		kmer end1(end2int128(unitigs[iL]));
 		if(end1==beg2){
-			/* db*/
-			if (unitigs[iR]== "ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG"  or unitigs[iL]=="ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" ){
-				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
-				if (unitigs[iL] == unitigs[iR]){
-					cout << "BORDEL" << endl;
-				}
-			}
-			if (unitigs[iR]== "CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT" or unitigs[iL]=="CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT"){
-				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
-				if (unitigs[iL] == unitigs[iR]){
-					cout << "BORDEL" << endl;
-				}
-			}
-			/*end*/
 			unitigs[iL]+=(unitigs[iR].substr(k));
-			// 	if((iL==lol or iR==lol) and found){
-			// 	cout<<unitigs[iL]<<endl;
-			// 	lol=iL;
-			// }
 			unitigs[iR]=to_string(iL);
 			return;
 		}
 
 		kmer begrc2(rcb(end2));
 		if(end1==begrc2){
-			/* db*/
-			if (unitigs[iR]== "ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG"  or unitigs[iL]=="ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG" ){
-				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
-				if (unitigs[iL] == unitigs[iR]){
-					cout << "BORDEL" << endl;
-				}
-			}
-			if (unitigs[iR]== "CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT" or unitigs[iL]=="CAAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTGT"){
-				cout << "compaction malfoy " << unitigs[iL] << " " << unitigs[iR] << endl;
-				if (unitigs[iL] == unitigs[iR]){
-					cout << "BORDEL" << endl;
-				}
-			}
-			/*end*/
 			unitigs[iL]+=(reverseinplace(unitigs[iR]).substr(k));
-			// if((iL==lol or iR==lol) and found){
-			// 	cout<<unitigs[iL]<<endl;
-			// 	lol=iL;
-			// }
 			unitigs[iR]=to_string(iL);
 			return;
 		}
@@ -423,13 +161,15 @@ void graph3::debruijn(){
 	uint iL(0),iR(0);
 	kmerIndice kL,kR;
 	while(iL!=left.size() and iR!=right.size()){
-		//~ if (unitigs[iL] == "AAAATGGATAACTGGATAGTGAAATAATGCGGACACAGTGGCCCTCTCCGGCAAAACTTAATCTGTTTTTATACATTACCGGTCAGCGTGCGGATGGTTA" or unitigs[iR] == "AAAATGGATAACTGGATAGTGAAATAATGCGGACACAGTGGCCCTCTCCGGCAAAACTTAATCTGTTTTTATACATTACCGGTCAGCGTGCGGATGGTTA" or  unitigs[iL] == "TAACCATCCGCACGCTGACCGGTAATGTATAAAAACAGATTAAGTTTTGCCGGAGAGGGCCACTGTGTCCGCATTATTTCACTATCCAGTTATCCATTTT"  or  unitigs[iR] ==  "TAACCATCCGCACGCTGACCGGTAATGTATAAAAACAGATTAAGTTTTGCCGGAGAGGGCCACTGTGTCCGCATTATTTCACTATCCAGTTATCCATTTT"){
-			//~ cout << "yes" << endl;
-			//~ cin.get();
-			
-		//~ }
+
 		kL=left[iL];
 		kR=right[iR];
+		if(getCanonical(unitigs[kL.indice])==getCanonical("AAAATAAGCCAATACGATCTCAACGCTATTGAAGCGGCTTGCCAGCTAAAGCAACAGGCAGCAGAGGCGCAGGTGACAGCCTTAAGTGTGGGCGGTAAAG")){
+			cout<<"hey"<<endl;
+		}
+		if(getCanonical(unitigs[kR.indice])==getCanonical("AAAATAAGCCAATACGATCTCAACGCTATTGAAGCGGCTTGCCAGCTAAAGCAACAGGCAGCAGAGGCGCAGGTGACAGCCTTAAGTGTGGGCGGTAAAG")){
+			cout<<"ho"<<endl;
+		}
 		if(kL.kmmer==kR.kmmer){
 			bool go(true);
 			++iL;++iR;
@@ -441,7 +181,7 @@ void graph3::debruijn(){
 					go=false;
 					while(right[++iR].kmmer==kR.kmmer){}
 				}
-			if(go and kL.indice != kR.indice){compaction(kL.indice,kR.indice);}
+			if(go){compaction(kL.indice,kR.indice);}
 		}else{
 			if(kL.kmmer<kR.kmmer){
 				while(left[++iL].kmmer==kL.kmmer){}
@@ -464,7 +204,7 @@ uint graph3::size(){return indiceUnitigs;};
 
 void graph3::addtuple(tuple<string,uint,uint> tuple){
 	unitigs[indiceUnitigs]=move(get<0>(tuple));
-	if(minimizer==(get<1>(tuple))){
+	if(true){
 		kmer kmer1(beg2int128(unitigs[indiceUnitigs]));
 		kmer kmer2(rcb(kmer1));
 		if(kmer1<kmer2){
@@ -473,7 +213,7 @@ void graph3::addtuple(tuple<string,uint,uint> tuple){
 			right.push_back(kmerIndice{indiceUnitigs,kmer2});
 		}
 	}
-	if(minimizer==get<2>(tuple)){
+	if(true){
 		kmer kmer1(end2int128(unitigs[indiceUnitigs]));
 		kmer kmer2(rcb(kmer1));
 		if(kmer1<kmer2){
