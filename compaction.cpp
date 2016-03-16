@@ -77,40 +77,7 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k){
 void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k){
 	if (not vec[indexreadStruct1].sequence.empty()){
 		if (not vec[indexreadStruct2].sequence.empty()){
-			/*db*/
-			//~ if (vec[indexreadStruct1].sequence == "AGCACCGGTGATCATGTTTTTAACATAGTCGGCGTGCCCCGGGCAGTCTACGTGTGCGTAGTGACGGGTCGGGGTGTCGTATTCAACGTGAGAAGTGTTG"){
-				//~ cout << "*****************************" << vec[indexreadStruct1].index << " " << indexreadStruct2 << " " << k << endl;
-			//~ } else if (vec[indexreadStruct2].sequence == "AGCACCGGTGATCATGTTTTTAACATAGTCGGCGTGCCCCGGGCAGTCTACGTGTGCGTAGTGACGGGTCGGGGTGTCGTATTCAACGTGAGAAGTGTTG"){
-				//~ cout << "*****************************" << vec[indexreadStruct2].index << " " << indexreadStruct1 << " " << k << endl;
-			//~ }
-			//~ if ( indexreadStruct1 == 175398 or indexreadStruct2 == 175398 or indexreadStruct1 == 754701 or indexreadStruct2 == 754701){
-				//~ cout << indexreadStruct1 << " " << vec[indexreadStruct1].sequence << endl;
-				//~ cout << indexreadStruct2 << " " << vec[ indexreadStruct2].sequence << endl;
-				//~ }
-			/*end*/
-			/*db*/
-				//~ if(vec[indexreadStruct1].sequence=="AGCACCGGTGATCATGTTTTTAACATAGTCGGCGTGCCCCGGGCAGTCTACGTGTGCGTAGTGACGGGTCGGGGTGTCGTATTCAACGTGAGAAGTGTTG"){
-					//~ cout << "seq in read " << indexreadStruct1 << endl;
-				//~ } else if(vec[indexreadStruct2].sequence=="AGCACCGGTGATCATGTTTTTAACATAGTCGGCGTGCCCCGGGCAGTCTACGTGTGCGTAGTGACGGGTCGGGGTGTCGTATTCAACGTGAGAAGTGTTG") {
-					//~ cout << "seq in read " << indexreadStruct2 << endl;
-				//~ }
-				if (indexreadStruct1== 4461 or indexreadStruct2== 4461){
-					cout << "*****" << endl;
-					cout <<  " " <<vec[indexreadStruct1].index << " " << vec[indexreadStruct1].sequence << endl;
-					cout <<" " <<vec[indexreadStruct2].index << " "  <<vec[indexreadStruct2].sequence << endl;
-					cout << "compaction" << indexreadStruct1  << " " << indexreadStruct2 << endl;
-				}
-			/*end*/
 			string c = compaction(vec[indexreadStruct1], vec[indexreadStruct2], k);
-			/* db*/
-			string lol = getCanonical(c) ;
-			if (lol == "ACAGAGTTGGATCCCGGTCGTTTCTGGATTTTTGTTAAGCCGGGTTATTCGTAAAGATCGCGATGAGCCGTTTGTTTATAACAGCGGCGGTTCCTCTTTTG"){
-				cout << vec[indexreadStruct1].sequence << endl;
-				cout << vec[indexreadStruct2].sequence << endl;
-				cout << "c" << endl;
-			}
-
-			/*end*/
 			if (not c.empty()){
 
 				vec[indexreadStruct1] = {vec[indexreadStruct1].index, c};
@@ -189,10 +156,10 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k){
 	edge prefix = nPrefix(k, seq.index, seq.sequence);
 	string canonPrefix = getCanonical(prefix.sequence);
-	if (canonPrefix ==  "AAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTG"){
-		cout << "pref" << endl;
+	if (canonPrefix == "AGCGCGGTGGTCCCACCTGACCCCATGCCGAACTCAGAAGTGAAACGCCGTAGCGCCGATGGTAGTGTGGGGTCTCCCCATGCGAGAGTAGGGAACTGC" ){
+		cout << "pref " << k<< endl;
+		cin.get();
 	}
-	//~ cout<<"pre"<<endl;
 	//~ cout<<prefix.sequence<<" "<<canonPrefix<<endl;
 	if (prefix.sequence == canonPrefix){
 		vecLeft.push_back({prefix.index, canonPrefix});
@@ -206,9 +173,9 @@ void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k){
 	edge suffix = nSuffix(k, seq.index, seq.sequence);
 	string canonSuffix = getCanonical(suffix.sequence);
-	//~ cout<<"suf"<<endl;
-	if (canonSuffix == "AAAAGAGGAACCGCCGCTGTTATAAACAAACGGCTCATCGCGATCTTTACGAATAACCCGGCTTAACAAAAATCCAGAAACGACCGGGATCCAACTCTG"){
-		cout << "suff" << endl;
+	if (canonSuffix == "GCGCGGTGGTCCCACCTGACCCCATGCCGAACTCAGAAGTGAAACGCCGTAGCGCCGATGGTAGTGTGGGGTCTCCCCATGCGAGAGTAGGGAACTGCC"){
+		cout << "suff " << k << endl;
+		cin.get();
 	}
 	//~ cout<<suffix.sequence<<" "<<canonSuffix<<endl;
 	if (suffix.sequence == canonSuffix){

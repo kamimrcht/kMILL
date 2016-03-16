@@ -112,7 +112,7 @@ kmer graph3::rcb(kmer min){
 
 void graph3::compaction(uint iL,  uint iR){
 	if (iL != iR){
-		cout<<"go compaction !!!!!!!!!!!!!!!!"<<endl;
+		//~ cout<<"go compaction !!!!!!!!!!!!!!!!"<<endl;
 		uint s1(unitigs[iL].size()),s2(unitigs[iR].size());
 		bool b1(isNumber(unitigs[iL][0])),b2(isNumber(unitigs[iR][0]));
 		if(b1 and b2){return compaction(stoi(unitigs[iL]),stoi(unitigs[iR]));}
@@ -164,12 +164,12 @@ void graph3::debruijn(){
 
 		kL=left[iL];
 		kR=right[iR];
-		if(getCanonical(unitigs[kL.indice])==getCanonical("AAAATAAGCCAATACGATCTCAACGCTATTGAAGCGGCTTGCCAGCTAAAGCAACAGGCAGCAGAGGCGCAGGTGACAGCCTTAAGTGTGGGCGGTAAAG")){
-			cout<<"hey"<<endl;
-		}
-		if(getCanonical(unitigs[kR.indice])==getCanonical("AAAATAAGCCAATACGATCTCAACGCTATTGAAGCGGCTTGCCAGCTAAAGCAACAGGCAGCAGAGGCGCAGGTGACAGCCTTAAGTGTGGGCGGTAAAG")){
-			cout<<"ho"<<endl;
-		}
+		//~ if(getCanonical(unitigs[kL.indice])==getCanonical("AAAATAAGCCAATACGATCTCAACGCTATTGAAGCGGCTTGCCAGCTAAAGCAACAGGCAGCAGAGGCGCAGGTGACAGCCTTAAGTGTGGGCGGTAAAG")){
+			//~ cout<<"hey"<<endl;
+		//~ }
+		//~ if(getCanonical(unitigs[kR.indice])==getCanonical("AAAATAAGCCAATACGATCTCAACGCTATTGAAGCGGCTTGCCAGCTAAAGCAACAGGCAGCAGAGGCGCAGGTGACAGCCTTAAGTGTGGGCGGTAAAG")){
+			//~ cout<<"ho"<<endl;
+		//~ }
 		if(kL.kmmer==kR.kmmer){
 			bool go(true);
 			++iL;++iR;

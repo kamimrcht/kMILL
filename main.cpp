@@ -51,12 +51,11 @@ int main(int argc, char ** argv){
 				auto startChrono=chrono::system_clock::now();
 				vector <edge> right;  // vector of canonical suffixes
 				vector <edge> left; //  vector of canonical prefixes
-				cout << "k " << k << endl;
 				for (uint i(0); i<sequencesVec.size(); ++i){
-					if (getCanonical(sequencesVec[i].sequence) == getCanonical("AAAATAAGCCAATACGATCTCAACGCTATTGAAGCGGCTTGCCAGCTAAAGCAACAGGCAGCAGAGGCGCAGGTGACAGCCTTAAGTGTGGGCGGTAAAG")){
-						cout << "sexxxx" << endl;
-						// cin.get();
-					}
+					//~ if (getCanonical(sequencesVec[i].sequence) == getCanonical("AAAATAAGCCAATACGATCTCAACGCTATTGAAGCGGCTTGCCAGCTAAAGCAACAGGCAGCAGAGGCGCAGGTGACAGCCTTAAGTGTGGGCGGTAAAG")){
+						//~ cout << "sexxxx" << endl;
+						//~ // cin.get();
+					//~ }
 
 					if (sequencesVec[i].sequence.size() >= k){
 						graphCompactor.addtuple(make_tuple(sequencesVec[i].sequence,0,0));
@@ -115,12 +114,12 @@ int main(int argc, char ** argv){
 				}
 				cout <<  "size gphe " << graphCompactor.size() << endl;
 				cout <<"m:"<< sizeM << " c: " << sizeC << endl;
-				if(sizeM!=sizeC){
-					cin.get();
-				}
-				if (diff){
-					cin.get();
-				}
+				//~ if(sizeM!=sizeC){
+					//~ cin.get();
+				//~ }
+				//~ if (diff){
+					//~ cin.get();
+				//~ }
 
 
 				auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
