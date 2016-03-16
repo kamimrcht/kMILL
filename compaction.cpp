@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <unordered_set>
 #include "utils.h"
 #include "compaction.h"
 #include "ograph.h"
@@ -21,28 +22,103 @@ edge nSuffix(uint n, uint index, const string& sequence){
 }
 
 
-vector<edge> removeNotSingles(const vector<edge>& vect, uint k){
+vector<edge> removeNotSinglesInRight(const vector<edge>& vect, unordered_set<string>& edgesToRemove, uint k){
 	vector<edge> vectResult;
 	uint i(0);
+	bool remove(false);
 	while (i < vect.size()){
 		if (i == 0){
 			if (vect[i].sequence != vect[i+1].sequence){
 				vectResult.push_back(vect[i]);
+			} else {
+				remove = true;
 			}
 		} else if (i == vect.size()-1){
 			if (vect[i].sequence != vect[i-1].sequence){
 				vectResult.push_back(vect[i]);
+			} else {
+				remove = true;
 			}
 		} else {
 			if (vect[i].sequence != vect[i+1].sequence and vect[i].sequence != vect[i-1].sequence){
 				vectResult.push_back(vect[i]);
+			} else {
+				remove = true;
 			}
 		}
+		if (remove == true){
+			edge seq(nPrefix(k-1, vect[i].index, vect[i].sequence));
+			//~ edgesToRemove.insert(seq.sequence);
+			string seqToInsert(getCanonical(seq.sequence));
+			edgesToRemove.insert(seqToInsert);
+			edgesToRemove.insert(seq.sequence);
+		}
 		++i;
+		remove = false;
 	}
 	return vectResult;
 }
 
+
+vector<edge> removeNotSinglesInLeft(const vector<edge>& vect, unordered_set<string>& edgesToRemove, uint k){
+	vector<edge> vectResult;
+	uint i(0);
+	bool remove(false);
+	while (i < vect.size()){
+		if (i == 0){
+			if (vect[i].sequence != vect[i+1].sequence){
+				vectResult.push_back(vect[i]);
+			} else {
+				//~ cout << "cas 1"<< endl;
+				remove = true;
+			}
+		} else if (i == vect.size()-1){
+			if (vect[i].sequence != vect[i-1].sequence){
+				vectResult.push_back(vect[i]);
+			} else {
+				//~ cout << "cas 2"<< endl;
+				remove = true;
+			}
+		} else {
+			if (vect[i].sequence != vect[i+1].sequence and vect[i].sequence != vect[i-1].sequence){
+				vectResult.push_back(vect[i]);
+			} else {
+				//~ cout << "cas 3"<< endl;
+				remove = true;
+			}
+		}
+		if (remove == true){
+			//~ cout << "**" <<vect[i].sequence << endl;
+			edge seq(nSuffix(k-1, vect[i].index, vect[i].sequence));
+			string seqToInsert(getCanonical(seq.sequence));
+			edgesToRemove.insert(seqToInsert);
+			edgesToRemove.insert(seq.sequence);
+		}
+		++i;
+		remove = false;
+	}
+	return vectResult;
+}
+
+
+vector<edge> removeEdgesForNextK(const vector<edge>& vect, const unordered_set<string>& edgesToRemove){
+	//~ cout << "**" << endl;
+	vector<edge> vectResult;
+	uint i(0);
+	//~ uint compt(0);
+	while (i < vect.size()){
+		string debug(getCanonical(vect[i].sequence));
+		//~ cout << "%%%%%" << vect[i].sequence<< endl;
+		if (not edgesToRemove.count(debug)){
+			vectResult.push_back(vect[i]);
+		} else {
+			//~ ++ compt;
+		}
+		++i;
+	}
+	//~ cout << "compt " <<compt << endl;
+	return vectResult;
+}
 
 bool compareEdgeByString(const edge& seqL, const edge& seqR){
     return seqL.sequence < seqR.sequence;
@@ -97,21 +173,38 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 
 
 //  checks from the suffixes and prefixes of pairs of readStructs of a vector if they can be compacted
-void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k){
+void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k, unordered_set<string>& edgesToRemove){
 	uint compac(0);
 	sort(left.begin(), left.end(), compareEdge());
 	sort(right.begin(), right.end(), compareEdge());
+	vector<edge> leftRemoved;
+	vector<edge> rightRemoved;
 	vector<edge> leftSingles;
 	vector<edge> rightSingles;
 	if (left.size()>1){
-		leftSingles = removeNotSingles(left,k);
+		leftRemoved = removeNotSinglesInLeft(left, edgesToRemoveLeft, k);
 	} else {
-		leftSingles = left;
+		leftRemoved = left;
 	}
 	if (right.size()>1){
-		rightSingles = removeNotSingles(right,k);
+		rightRemoved = removeNotSinglesInRight(right, edgesToRemoveLeft, k);
 	} else {
-		rightSingles = right;
+		rightRemoved = right;
+	}
+	if (not edgesToRemoveLeft.empty()){
+		if (not leftRemoved.empty()){
+			leftSingles = removeEdgesForNextK(leftRemoved, edgesToRemoveLeft);
+		} else {
+			leftSingles = leftRemoved;
+		}
+		if (not rightRemoved.empty()){
+			rightSingles = removeEdgesForNextK(rightRemoved, edgesToRemoveLeft);
+		} else {
+			rightSingles = rightRemoved;
+		}
+	} else {
+		leftSingles = leftRemoved;
+		rightSingles = rightRemoved;
 	}
 	uint indexL(0),indexR(0);
 	while (indexL < leftSingles.size() and indexR < rightSingles.size()){

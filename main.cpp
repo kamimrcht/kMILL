@@ -44,6 +44,7 @@ int main(int argc, char ** argv){
 		auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 		cout<<"Init took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec"<<endl;
 		uint size(sequencesVec.size());
+		unordered_set<string> edgesToRemove;
 		if (k>0) {
 			do {
 				bool diff = false;
@@ -59,7 +60,7 @@ int main(int argc, char ** argv){
 					}
 				}
 				graphCompactor.debruijn();
-				parseVector(left, right, sequencesVec, k);
+				parseVector(left, right, sequencesVec, k, edgesToRemove);
 				unordered_set <string> malfoySet;
 				unordered_set <string> camilleSet;
 				uint sizeM(0);
