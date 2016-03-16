@@ -52,11 +52,6 @@ int main(int argc, char ** argv){
 				vector <edge> right;  // vector of canonical suffixes
 				vector <edge> left; //  vector of canonical prefixes
 				for (uint i(0); i<sequencesVec.size(); ++i){
-					//~ if (getCanonical(sequencesVec[i].sequence) == getCanonical("AAAATAAGCCAATACGATCTCAACGCTATTGAAGCGGCTTGCCAGCTAAAGCAACAGGCAGCAGAGGCGCAGGTGACAGCCTTAAGTGTGGGCGGTAAAG")){
-						//~ cout << "sexxxx" << endl;
-						//~ // cin.get();
-					//~ }
-
 					if (sequencesVec[i].sequence.size() >= k){
 						graphCompactor.addtuple(make_tuple(sequencesVec[i].sequence,0,0));
 						fillPrefVector(left, right, sequencesVec[i], k);
@@ -64,19 +59,7 @@ int main(int argc, char ** argv){
 					}
 				}
 				graphCompactor.debruijn();
-				//~ cout<<"malfoy"<<endl;
-				//~ for (uint i(0); i<graphCompactor.size(); ++i){
-					//~ cout<<graphCompactor.unitigs[i]<<endl;
-				//~ }
-
 				parseVector(left, right, sequencesVec, k);
-				//~ cout<<"camille"<<endl;
-				//~ for (uint i(0); i<sequencesVec.size(); ++i){
-					//~ cout<<sequencesVec[i].sequence<<endl;
-				//~ }
-				//~ cout<<"end"<<endl;
-
-
 				unordered_set <string> malfoySet;
 				unordered_set <string> camilleSet;
 				uint sizeM(0);
@@ -86,7 +69,6 @@ int main(int argc, char ** argv){
 					if (not seq.empty()){
 						malfoySet.insert(seq);
 						sizeM += seq.size();
-						//~ cout << seq.size() << endl;
 					}
 				}
 
@@ -99,8 +81,6 @@ int main(int argc, char ** argv){
 						if((malfoySet.count(seq)==0) ){
 							cout << "*** c and not m ***" << seq << " "<<  seq.size() <<endl;
 							diff = true;
-							//~ cout << seq.size() << endl;
-							// cin.get();
 						}
 					}
 				}
@@ -114,18 +94,9 @@ int main(int argc, char ** argv){
 				}
 				cout <<  "size gphe " << graphCompactor.size() << endl;
 				cout <<"m:"<< sizeM << " c: " << sizeC << endl;
-				//~ if(sizeM!=sizeC){
-					//~ cin.get();
-				//~ }
-				//~ if (diff){
-					//~ cin.get();
-				//~ }
-
-
 				auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 				cout<<"k: "<<k<<": left.size "<<left.size()<<" right.size "<<right.size()<<" Step took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec "<<endl;
 				--k;
-				// cin.get();
 			} while (k>3);
 
 
@@ -155,18 +126,9 @@ int main(int argc, char ** argv){
 						if (w +100 < sequencesVec[i].sequence.size()) {
 							read.index = sequencesVec[i].index;
 							read.sequence = getCanonical(sequencesVec[i].sequence.substr(w,100));
-							//~ if (read.index == 754701){
-								//~ cout << w << " " << sequencesVec[i].sequence.size()<< endl;
-								//~ cout << "window" << read.sequence << endl;
-							//~ }
 						} else {
 							read.index = sequencesVec[i].index;
 							read.sequence = getCanonical(sequencesVec[i].sequence.substr(w));
-							//~ if (read.index == 754701){
-
-								//~ cout << w<< "else " << sequencesVec[i].sequence.size()<< endl;
-								//~ cout << "window" << read.sequence << endl;
-							//~ }
 						}
 
 						++w;
@@ -177,10 +139,7 @@ int main(int argc, char ** argv){
 								++rfound;
 								if (finalSet.count(read.sequence)){
 									finalSet[read.sequence] += 1;
-									//~ if (read.index == 754701){
 										cout << read.index << " REPETE: " <<read.sequence << endl;
-									//~ }
-
 								} else {
 									finalSet.insert({read.sequence,1});
 								}
@@ -245,45 +204,6 @@ int main(int argc, char ** argv){
 				cout <<  "sizes of sets: " << initSet.size() << " " << finalSet.size() << endl;
 				cout <<  "inserted elements: " <<inserted << " " << rfound << endl;
 			}
-			//~ vector <readStruct> remainingReads;
-			//~ uint readIndex(0);
-			//~ for (auto iter=initSet.begin(); iter!=initSet.end(); ++iter){
-				//~ auto found = finalSet.find(*iter);
-				//~ if (found == finalSet.end()){
-					//~ readStruct read({readIndex, *iter});
-					//~ remainingReads.push_back(read);
-					//~ ++ readIndex;
-				//~ }
-			//~ }
-			//~ cout << "remaining reads: "<<remainingReads.size() << endl;
-			//~ k = stoi(argv[2]);
-			//~ do {
-				//~ vector <edge> right;  // vector of canonical suffixes
-				//~ vector <edge> left; //  vector of canonical prefixes
-				//~ for (uint i(0); i<remainingReads.size(); ++i){
-					//~ if (remainingReads[i].sequence.size() > k){
-						//~ fillPrefVector(left, right, remainingReads[i], k);
-						//~ fillSuffVector(left, right, remainingReads[i], k);
-					//~ }
-				//~ }
-				//~ for (uint i(0); i< remainingReads.size(); ++i){
-					//~ if (remainingReads[i].sequence.size()>0){
-						//~ cout << "******" << remainingReads[i].sequence.size() << endl;
-					//~ }
-
-				//~ }
-				//~ parseVector(left, right, remainingReads, k);
-				//~ for (uint i(0); i< remainingReads.size(); ++i){
-					//~ if (remainingReads[i].sequence.size()>0){
-							//~ cout << "after******" << remainingReads[i].sequence.size() << endl;
-						//~ }
-				//~ }
-				//~ --k;
-				//~ auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
-				//~ cout<<"k: "<<k<<": left.size "<<left.size()<<" right.size "<<right.size()<<" Step took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec "<<endl;
-			//~ } while (k>2);
-			//~ cout << "after compaction "<<remainingReads.size() << endl;
-			/* end debug */
 		}
 	}
 	return 0;

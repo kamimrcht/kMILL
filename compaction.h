@@ -37,7 +37,6 @@ struct compareRead{
 
 edge nPrefix(uint n, uint index, const string& sequence);
 edge nSuffix(uint n, uint index, const string& sequence);
-//~ vector<edge> removeDuplicates(const vector<edge>& vect);
 vector<edge> removeNotSingles(const vector<edge>& vect, uint k);
 bool compareEdgeByString(const edge& seqL, const edge& seqR);
 string compaction(const readStruct& seq1, const readStruct& seq2, uint k);
