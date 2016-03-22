@@ -44,94 +44,159 @@ int main(int argc, char ** argv){
 		auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 		cout<<"Init took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec"<<endl;
 		uint size(sequencesVec.size());
-		unordered_set<string> edgesToRemove;
+		unordered_set<string> seqsToRemoveInSuff;
+		unordered_set<string> seqsToRemoveInPref;
+		unordered_set<int> readsToRemovePref;
+		unordered_set<int> readsToRemoveSuff;
 		if (k>0) {
 			do {
 				bool diff = false;
-				graph3 graphCompactor(k,0,1,sequencesVec.size());
+				//~ graph3 graphCompactor(k,0,1,sequencesVec.size());
 				auto startChrono=chrono::system_clock::now();
 				vector <edge> right;  // vector of canonical suffixes
 				vector <edge> left; //  vector of canonical prefixes
+				auto startfor=chrono::system_clock::now();
 				for (uint i(0); i<sequencesVec.size(); ++i){
 					if (sequencesVec[i].sequence.size() >= k){
-						graphCompactor.addtuple(make_tuple(sequencesVec[i].sequence,0,0));
-						fillPrefVector(left, right, sequencesVec[i], k);
-						fillSuffVector(left, right, sequencesVec[i], k);
+						//~ graphCompactor.addtuple(make_tuple(sequencesVec[i].sequence,0,0));
+						fillPrefVector(left, right, sequencesVec[i], k, readsToRemovePref);
+						fillSuffVector(left, right, sequencesVec[i], k, readsToRemoveSuff);
 					}
 				}
-				graphCompactor.debruijn();
-				parseVector(left, right, sequencesVec, k, edgesToRemove);
+				auto endFor=chrono::system_clock::now();auto wFor=endFor-startfor;
+				cout<<"for took : "<<(chrono::duration_cast<chrono::seconds>(wFor).count())<<" sec"<<endl;
+				//~ for (auto iter = readsToRemovePref.begin(); iter != readsToRemovePref.end(); ++iter){
+					//~ cout << "***** " << *iter << endl;
+				//~ }
+				//~ readsToRemovePref.clear();
+				//~ readsToRemoveSuff.clear();
+				//~ graphCompactor.debruijn();
+				auto startparse=chrono::system_clock::now();
+				parseVector(left, right, sequencesVec, k, seqsToRemoveInSuff, seqsToRemoveInPref,  readsToRemovePref, readsToRemoveSuff);
+				auto endparse=chrono::system_clock::now();auto wParse=endparse-startparse;
+				cout<<"parse took : "<<(chrono::duration_cast<chrono::seconds>(wParse).count())<<" sec"<<endl;
 				unordered_set <string> malfoySet;
 				unordered_set <string> camilleSet;
 				uint sizeM(0);
 
-				for (uint i(0); i < graphCompactor.size(); ++i){
-					string seq = getCanonical(graphCompactor.unitigs[i]);
-					if (not seq.empty()){
-						malfoySet.insert(seq);
-						sizeM += seq.size();
-					}
-				}
+				//~ for (uint i(0); i < graphCompactor.size(); ++i){
+					//~ string seq = getCanonical(graphCompactor.unitigs[i]);
+					//~ if (not seq.empty()){
+						//~ malfoySet.insert(seq);
+						//~ sizeM += seq.size();
+					//~ }
+				//~ }
 
-				uint sizeC(0);
-				for (uint i(0); i<sequencesVec.size(); ++i){
-					string seq = getCanonical(sequencesVec[i].sequence);
-					sizeC += seq.size();
-					if (not (seq.empty()) and  seq.size()>= k){
-						camilleSet.insert(seq);
-						if((malfoySet.count(seq)==0) ){
-							cout << "*** c and not m ***" << seq << " "<<  seq.size() <<endl;
-							diff = true;
-						}
-					}
-				}
-				for (uint i(0); i < graphCompactor.size(); ++i){
-					string seq = getCanonical(graphCompactor.unitigs[i]);
-					if (not seq.empty()){
-						if(camilleSet.count(seq)==0){
-							diff=true;
-						}
-					}
-				}
-				cout <<  "size gphe " << graphCompactor.size() << endl;
-				cout <<"m:"<< sizeM << " c: " << sizeC << endl;
+				//~ uint sizeC(0);
+				//~ for (uint i(0); i<sequencesVec.size(); ++i){
+					//~ string seq = getCanonical(sequencesVec[i].sequence);
+					//~ sizeC += seq.size();
+					//~ if (not (seq.empty()) and  seq.size()>= k){
+						//~ camilleSet.insert(seq);
+						//~ if((malfoySet.count(seq)==0) ){
+							//~ cout << "*** c and not m ***" << seq << " "<<  seq.size() <<endl;
+							//~ diff = true;
+						//~ }
+					//~ }
+				//~ }
+				
+				//~ for (uint i(0); i < graphCompactor.size(); ++i){
+					//~ string seq = getCanonical(graphCompactor.unitigs[i]);
+					//~ if (not seq.empty()){
+						//~ if(camilleSet.count(seq)==0){
+							//~ diff=true;
+						//~ }
+					//~ }
+				//~ }
+				
+				//~ cout <<  "size gphe " << graphCompactor.size() << endl;
+				//~ cout <<"m:"<< sizeM << " c: " << sizeC << endl;
 				auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 				cout<<"k: "<<k<<": left.size "<<left.size()<<" right.size "<<right.size()<<" Step took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec "<<endl;
-				--k;
-			} while (k>3);
+
+				
+				/* debug */
+				ifstream readStructFile2(fileName);
+				unordered_set <string> initSet;
+				unordered_map <string, uint> finalSet;
+				uint inserted(0);
+				while (not readStructFile2.eof()){
+					string seq;
+					getline(readStructFile2, seq);
+					getline(readStructFile2, seq);
+					string seqC(getCanonical(seq));
+					if (not seqC.empty()){
+						initSet.insert(seqC);
+						++inserted;
+					}
+				}
+				uint rfound(0);
+				for (uint i(0); i < sequencesVec.size(); ++i){
+					if (not sequencesVec[i].sequence.empty()){
+						uint w(0);
+						do{
+							readStruct read;
+							read.index = sequencesVec[i].index;
+							read.sequence = getCanonical(sequencesVec[i].sequence.substr(w,100));
+							++w;
+							if (not read.sequence.empty()){
+								auto readFound = initSet.find(read.sequence);
+								if (readFound == initSet.end() ){
+								} else {
+									++rfound;
+									if (finalSet.count(read.sequence)){
+										finalSet[read.sequence] += 1;
+											cout << read.index << " REPETE: " <<read.sequence <<  " at "<< k <<  endl;
+											cin.get();
+									} else {
+										finalSet.insert({read.sequence,1});
+									}
+								}
+							}
+
+						} while(w < sequencesVec[i].sequence.size());
+					}
+				}
+				if ( initSet.size() == finalSet.size()){
+					cout << "*** debug *** all reads in unitigs: ok" << endl;
+					cout <<  "sizes of sets: " << initSet.size() << " " << finalSet.size() << endl;
+					cout <<  "inserted elements: " <<inserted << " " << rfound << endl;
+				} else {
+					cout << "size real reads set: " <<  size << endl;
+					cout <<  "sizes of sets: " << initSet.size() << " " << finalSet.size() << endl;
+					cout <<  "inserted elements: " <<inserted << " " << rfound << endl;
+				}
+				/* end debug*/
+				
+				--k;				
+			} while (k>2);
 
 
 
 
-			/* debug */
-			ifstream readStructFile2(fileName);
+			//~ /* debug */
+			//~ ifstream readStructFile2(fileName);
+			//~ uint inserted(0);
+			//~ while (not readStructFile2.eof()){
+				//~ string seq;
+				//~ getline(readStructFile2, seq);
+				//~ getline(readStructFile2, seq);
+				//~ string seqC(getCanonical(seq));
+				//~ if (not seqC.empty()){
+					//~ initSet.insert(seqC);
+					//~ ++inserted;
+				//~ }
+			//~ }
 			unordered_set <string> initSet;
 			unordered_map <string, uint> finalSet;
-			uint inserted(0);
-			while (not readStructFile2.eof()){
-				string seq;
-				getline(readStructFile2, seq);
-				getline(readStructFile2, seq);
-				string seqC(getCanonical(seq));
-				if (not seqC.empty()){
-					initSet.insert(seqC);
-					++inserted;
-				}
-			}
 			uint rfound(0);
 			for (uint i(0); i < sequencesVec.size(); ++i){
 				if (not sequencesVec[i].sequence.empty()){
 					uint w(0);
 					do{
 						readStruct read;
-						if (w +100 < sequencesVec[i].sequence.size()) {
-							read.index = sequencesVec[i].index;
-							read.sequence = getCanonical(sequencesVec[i].sequence.substr(w,100));
-						} else {
-							read.index = sequencesVec[i].index;
-							read.sequence = getCanonical(sequencesVec[i].sequence.substr(w));
-						}
-
+						read.index = sequencesVec[i].index;
+						read.sequence = getCanonical(sequencesVec[i].sequence.substr(w,100));
 						++w;
 						if (not read.sequence.empty()){
 							auto readFound = initSet.find(read.sequence);
@@ -150,9 +215,7 @@ int main(int argc, char ** argv){
 					} while(w < sequencesVec[i].sequence.size());
 				}
 			}
-			//~ AGCACCGGTGATCATGTTTTTAACATAGTCGGCGTGCCCCGGGCAGTCTACGTGTGCGTAGTGACGGGTCGGGGTGTCGTATTCAACGTGAGAAGTGTTG
-			//~ CAACACTTCTCACGTTGAATACGACACCCCGACCCGTCACTACGCACACGTAGACTGCCCGGGGCACGCCGACTATGTTAAAAACATGATCACCGGTGCT
-			/* end debug*/
+			//~ /* end debug*/
 			uint header(1);
 			vector <readStruct> sequencesVec2ndPass;
 			sequencesVec2ndPass = sequencesVec;
@@ -195,16 +258,17 @@ int main(int argc, char ** argv){
 
 			auto endend=chrono::system_clock::now();auto waitedFor2=endend-startChrono;
 			cout<<"whole process took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor2).count())<<" sec"<<endl;
-			/* debug */
-			if ( initSet.size() == finalSet.size()){
-				cout << "*** debug *** all reads in unitigs: ok" << endl;
-				cout <<  "sizes of sets: " << initSet.size() << " " << finalSet.size() << endl;
-				cout <<  "inserted elements: " <<inserted << " " << rfound << endl;
-			} else {
-				cout << "size real reads set: " <<  size << endl;
-				cout <<  "sizes of sets: " << initSet.size() << " " << finalSet.size() << endl;
-				cout <<  "inserted elements: " <<inserted << " " << rfound << endl;
-			}
+			//~ /* debug */
+			//~ if ( initSet.size() == finalSet.size()){
+				//~ cout << "*** debug *** all reads in unitigs: ok" << endl;
+				//~ cout <<  "sizes of sets: " << initSet.size() << " " << finalSet.size() << endl;
+				//~ cout <<  "inserted elements: " <<inserted << " " << rfound << endl;
+			//~ } else {
+				//~ cout << "size real reads set: " <<  size << endl;
+				//~ cout <<  "sizes of sets: " << initSet.size() << " " << finalSet.size() << endl;
+				//~ cout <<  "inserted elements: " <<inserted << " " << rfound << endl;
+			//~ }
+			//~ /* end */
 		}
 	}
 	return 0;

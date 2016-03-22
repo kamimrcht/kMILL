@@ -14,5 +14,7 @@ string revComp(const string& seq);
 string getCanonical(const string& seq);
 void createinputlm(uint lr,uint k);
 void perfectsReadsFromRef(const string& refName,uint length,uint nbRead);
+/* debug */
+bool isSubSequenceInSequence(const string& subseq, const string& seq);
 
 #endif

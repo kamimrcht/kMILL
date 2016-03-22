@@ -161,3 +161,25 @@ void perfectsReadsFromRef(const string& refName,uint length,uint nbRead){
 		out<<(ref.substr(rand()%(ref.size()-length),length))<<endl;
 	}
 }
+
+
+/* debug */
+bool isSubSequenceInSequence(const string& subseq, const string& seq){
+	bool present = false;
+	if (not seq.empty()){
+		for (uint i(0); i < seq.size(); ++i){
+			uint w(0);
+			do{
+				//~ cout << w << endl;
+				string subseqToCheck(getCanonical(seq.substr(w,100)));
+				++w;
+				string canon(getCanonical(subseq));
+				if (canon == subseqToCheck){
+					present = true;
+				}
+			} while(w + 100 < seq.size());
+		}
+	}
+	return present;
+}
+/*end debug*/
