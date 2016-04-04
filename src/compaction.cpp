@@ -23,7 +23,7 @@ edge nSuffix(uint n, uint index, const string& sequence, bool canon){
 	return {index, sequence.substr(sequence.size()-n, n), canon};
 }
 
-
+/* remove overlaps that are duplicated in vector right, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
 vector<edge> removeNotSinglesInRight(const vector<edge>& vect, unordered_set<string>& seqsToRemoveInPref, unordered_set<string>& seqsToRemoveInSuff, uint k){
 	vector<edge> vectResult;
 	uint i(0);
@@ -62,6 +62,7 @@ vector<edge> removeNotSinglesInRight(const vector<edge>& vect, unordered_set<str
 }
 
 
+/* remove overlaps that are duplicated in vector left, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
 vector<edge> removeNotSinglesInLeft(const vector<edge>& vect, unordered_set<string>& seqsToRemoveInPref, unordered_set<string>& seqsToRemoveInSuff, uint k){
 	vector<edge> vectResult;
 	uint i(0);
@@ -100,6 +101,7 @@ vector<edge> removeNotSinglesInLeft(const vector<edge>& vect, unordered_set<stri
 }
 
 
+/* from sequences spotted, get reads' index for reads we do not want the prefix to be present in the next pass */ 
 void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove){
 	vector<edge> vectResult;
 	uint i(0);
@@ -123,6 +125,7 @@ void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& 
 }
 
 
+/* from sequences spotted, get reads' index for reads we do not want the suffix to be present in the next pass */ 
 void appendListReadsToRemoveSuff(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove){
 	vector<edge> vectResult;
 	uint i(0);
@@ -152,7 +155,7 @@ bool compareEdgeByString(const edge& seqL, const edge& seqR){
 }
 
 
-//  compaction of two readStructs if they have a k-overlap
+/*  compaction of two unitigs if they have a k-overlap */
 string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unordered_set<int>& readsToRemovePref, unordered_set<int>& readsToRemoveSuff){
 	
 	edge beg1 = nPrefix(k, seq1.index, seq1.sequence, true);
@@ -249,9 +252,6 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 				//~ readsToRemovePref.insert(seq1.index);
 			//~ }
 		//~ }
-		//~ return seq1.sequence + rSeq2.substr(k);
-		/* test */
-		//~ return compactedToReturn;
 	} else if (beg1.sequence == rBeg2.sequence){ //  overlap RF
 		string compacted(rSeq2 + seq1.sequence.substr(k));
 		/* tests */
@@ -285,8 +285,6 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 				//~ readsToRemoveSuff.insert(seq1.index);
 			//~ }
 		//~ }
-		/* test */
-		//~ return compactedToReturn;
 	} else {
 		cout<<"fail..."<<endl;
 		return "";
@@ -294,7 +292,7 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 }
 
 
-//  If two readStructs are compacted the result replaces one of them, the other becomes "" and keeps the index of its mate.
+/*  Recursive func to compact unitigs (if they are sequences or indexes)). If two unitigs are compacted the result replaces one of them, the other becomes "" and keeps the index of its mate. */
 void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k, unordered_set<int>& readsToRemovePref, unordered_set<int>& readsToRemoveSuff){
 	if (not vec[indexreadStruct1].sequence.empty()){
 		if (not vec[indexreadStruct2].sequence.empty()){
@@ -317,7 +315,7 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 }
 
 
-//  checks from the suffixes and prefixes of pairs of readStructs of a vector if they can be compacted
+/*  checks from the suffixes and prefixes of pairs of unitigs if they can be compacted. Appends overlaps that should be removed in the next pass. */
 void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k, unordered_set<string>& seqsToRemoveInSuff, unordered_set<string>& seqsToRemoveInPref, unordered_set<int>& readsToRemovePref, unordered_set<int>& readsToRemoveSuff){
 	uint compac(0);
 	sort(left.begin(), left.end(), compareEdge());
@@ -358,7 +356,7 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 }
 
 
-// fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs
+/* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
 void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemovePref){
 	if (not readsToRemovePref.unordered_set::count(seq.index)){
 		edge prefix = nPrefix(k, seq.index, seq.sequence, true);
@@ -372,7 +370,7 @@ void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 }
 
 
-// fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs
+/* fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs */
 void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemoveSuff){
 	if (not readsToRemoveSuff.unordered_set::count(seq.index)){
 		edge suffix = nSuffix(k, seq.index, seq.sequence, true);
@@ -386,6 +384,7 @@ void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 }
 
 
+/* remove duplicates in reads*/
 void cleanDuplicatesInreadStructs(vector <readStruct>& vec){
 	uint i(0);
 	string previousSeq("");
@@ -401,6 +400,7 @@ void cleanDuplicatesInreadStructs(vector <readStruct>& vec){
 }
 
 
+/* give a proper index to reads */
 void setreadStructsIndex(vector <readStruct>& vec){
 	for (uint i(0); i<vec.size(); ++i){
 		if (not vec[i].sequence.empty()){

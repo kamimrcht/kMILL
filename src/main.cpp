@@ -19,18 +19,14 @@ using namespace std;
 int main(int argc, char ** argv){
 	if (argc < 3){
 		cout << "command line: ./kMILL reads.fasta k" << endl;
-		string seq("TATA");
-		string seq2("TAGTA");
-		bool b(isCanonical(seq));
-		cout << b << endl;
 	} else {
 		//~ srand (34567);
 		srand (time(NULL));
 		//random genome
 		//~ createinputlm(2*1000*1000,100);
 		//genome from ref
-		//~ perfectsReadsFromRef("ecoliref.fa",100,1*1000*1000);
-		//~ perfectsReadsFromRef("lambda_virus.fa",100,1*1000*5);
+		//~ perfectsReadsFromRef("../ecoliref.fa",100,1*1000*1000);
+		//~ perfectsReadsFromRef("../lambda_virus.fa",100,1*1000*5);
 		auto startChrono=chrono::system_clock::now();
 		string fileName = argv[1];
 		uint k = stoi(argv[2]);
@@ -54,7 +50,7 @@ int main(int argc, char ** argv){
 		unordered_set<int> readsToRemoveSuff;
 		if (k>0) {
 			do {
-				bool diff = false;
+				//~ bool diff = false;
 				//~ graph3 graphCompactor(k,0,1,sequencesVec.size());
 				auto startChrono=chrono::system_clock::now();
 				vector <edge> right;  // vector of canonical suffixes
@@ -69,9 +65,6 @@ int main(int argc, char ** argv){
 				}
 				auto endFor=chrono::system_clock::now();auto wFor=endFor-startfor;
 				//~ cout<<"for took : "<<(chrono::duration_cast<chrono::seconds>(wFor))<<" sec"<<endl;
-				//~ for (auto iter = readsToRemovePref.begin(); iter != readsToRemovePref.end(); ++iter){
-					//~ cout << "***** " << *iter << endl;
-				//~ }
 				//~ readsToRemovePref.clear();
 				//~ readsToRemoveSuff.clear();
 				//~ graphCompactor.debruijn();
@@ -79,10 +72,9 @@ int main(int argc, char ** argv){
 				parseVector(left, right, sequencesVec, k, seqsToRemoveInSuff, seqsToRemoveInPref,  readsToRemovePref, readsToRemoveSuff);
 				auto endparse=chrono::system_clock::now();auto wParse=endparse-startparse;
 				//~ cout<<"parse took : "<<(chrono::duration_cast<chrono::seconds>(wParse).count())<<" sec"<<endl;
-				unordered_set <string> malfoySet;
-				unordered_set <string> camilleSet;
-				uint sizeM(0);
-
+				//~ unordered_set <string> malfoySet;
+				//~ unordered_set <string> camilleSet;
+				//~ uint sizeM(0);
 				//~ for (uint i(0); i < graphCompactor.size(); ++i){
 					//~ string seq = getCanonical(graphCompactor.unitigs[i]);
 					//~ if (not seq.empty()){
@@ -175,22 +167,6 @@ int main(int argc, char ** argv){
 				--k;				
 			} while (k>2);
 
-
-
-
-			//~ /* debug */
-			//~ ifstream readStructFile2(fileName);
-			//~ uint inserted(0);
-			//~ while (not readStructFile2.eof()){
-				//~ string seq;
-				//~ getline(readStructFile2, seq);
-				//~ getline(readStructFile2, seq);
-				//~ string seqC(getCanonical(seq));
-				//~ if (not seqC.empty()){
-					//~ initSet.insert(seqC);
-					//~ ++inserted;
-				//~ }
-			//~ }
 			unordered_set <string> initSet;
 			unordered_map <string, uint> finalSet;
 			uint rfound(0);
@@ -220,17 +196,16 @@ int main(int argc, char ** argv){
 				}
 			}
 			//~ /* end debug*/
-			uint header(1);
-			vector <readStruct> sequencesVec2ndPass;
-			sequencesVec2ndPass = sequencesVec;
-			//~ uint gg(0);
-			for (uint i(0); i<sequencesVec.size(); ++i){
-				if (not sequencesVec[i].sequence.empty()){
-					out<< ">seq_" + to_string(sequencesVec[i].index) << endl;
-					out<<sequencesVec[i].sequence << endl;
-					++header;
-				}
-			}
+			//~ uint header(1);
+			//~ vector <readStruct> sequencesVec2ndPass;
+			//~ sequencesVec2ndPass = sequencesVec;
+			//~ for (uint i(0); i<sequencesVec.size(); ++i){
+				//~ if (not sequencesVec[i].sequence.empty()){
+					//~ out<< ">seq_" + to_string(sequencesVec[i].index) << endl;
+					//~ out<<sequencesVec[i].sequence << endl;
+					//~ ++header;
+				//~ }
+			//~ }
 			//~ // test : 2nd pass
 			//~ k = stoi(argv[2]);
 			//~ ofstream out2nd("out_k"+to_string(k)+ "_2pass_" + fileName +".fa");

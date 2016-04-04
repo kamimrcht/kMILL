@@ -18,7 +18,7 @@ uint64_t transformStringToHash(const string& read){
 	return readHash(read);
 }
 
-
+/* create buckets to store canonical sequences of the reads */
 void createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstream>& outFiles){
 	string sequence, canonSequence;
 	while (not readStructFile.eof()){
@@ -33,6 +33,7 @@ void createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstrea
 }
 
 
+/* open buckets */
 void openBuckets(vector<ofstream>& outFiles){
 	for (uint nbFileOut(0); nbFileOut < outFiles.size() ; ++ nbFileOut){
 		outFiles[nbFileOut].open("read_file_" + to_string(nbFileOut) + ".fa");
@@ -40,6 +41,7 @@ void openBuckets(vector<ofstream>& outFiles){
 }
 
 
+/* get sequences from all buckets, sort them and remove duplicated reads */
 void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec){
 	uint index(0);
 	vector <readStruct> seqVecFile;
@@ -66,6 +68,7 @@ void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec){
 }
 
 
+/* remove bucket files */
 void removeReadFiles(uint nbBuckets){
 	for (uint i(0); i < nbBuckets; ++i){
 		string s("read_file_" + to_string(i) + ".fa");
