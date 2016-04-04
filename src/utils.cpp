@@ -19,17 +19,45 @@ char revCompChar(char c) {
 }
 
 
-string reverseComplements(const string& s){
+bool isCanonical(const string& seq){
+	if (seq.size() > 1){
+		char first(seq[0]);
+		char last(revCompChar(seq[seq.size()-1]));
+		if (first < last){
+			return true;
+		} else {
+			if (first == last){
+				string seq2(seq.substr(1,seq.size()-2));
+				return isCanonical(seq2);
+			} else {
+				return false;
+			}
+		}
+	} else {
+		if (seq.size() == 1){
+			switch(seq[0]){
+				case 'A': return true;
+				case 'C': return true;
+			}
+			return false;
+		} else {
+			return true;
+		}
+	}
+}
+
+
+// optimized
+string revComp(const string& s){
 	string rc(s.size(),0);
 	for (int i((int)s.length() - 1); i >= 0; i--){
-		rc[s.size()-1-i]= revCompChar(s[i]);
-		// rc[s.size()-1-i]=char2int[(uint)s[i]];
+		rc[s.size()-1-i] = revCompChar(s[i]);
 	}
 	return rc;
 }
 
 
-string revComp(const string& seq){
+string reverseComplements(const string& seq){
 	string revCompSeq = "";
 	int pos = seq.size()-1;
 	do{
@@ -49,13 +77,6 @@ string revComp(const string& seq){
 		}
 		--pos;
 	} while (pos>=0);
-
-	// if(revCompSeq!=reverseComplements(seq)){
-	// 	cout<<seq<<endl;
-	// 	cout<<revCompSeq<<endl<<reverseComplements(seq)<<endl;
-	// 	cout<<"lol"<<endl;
-	// 	cin.get();
-	// }
 	return revCompSeq;
 }
 
@@ -64,6 +85,8 @@ string getCanonical(const string& seq){
 	return min(seq,revComp(seq));
 }
 
+
+/* read generation */
 
 char randNuc(){
 	switch (rand()%4){
@@ -170,7 +193,6 @@ bool isSubSequenceInSequence(const string& subseq, const string& seq){
 		for (uint i(0); i < seq.size(); ++i){
 			uint w(0);
 			do{
-				//~ cout << w << endl;
 				string subseqToCheck(getCanonical(seq.substr(w,100)));
 				++w;
 				string canon(getCanonical(subseq));

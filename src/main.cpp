@@ -19,6 +19,10 @@ using namespace std;
 int main(int argc, char ** argv){
 	if (argc < 3){
 		cout << "command line: ./kMILL reads.fasta k" << endl;
+		string seq("TATA");
+		string seq2("TAGTA");
+		bool b(isCanonical(seq));
+		cout << b << endl;
 	} else {
 		//~ srand (34567);
 		srand (time(NULL));
@@ -64,7 +68,7 @@ int main(int argc, char ** argv){
 					}
 				}
 				auto endFor=chrono::system_clock::now();auto wFor=endFor-startfor;
-				cout<<"for took : "<<(chrono::duration_cast<chrono::seconds>(wFor).count())<<" sec"<<endl;
+				//~ cout<<"for took : "<<(chrono::duration_cast<chrono::seconds>(wFor))<<" sec"<<endl;
 				//~ for (auto iter = readsToRemovePref.begin(); iter != readsToRemovePref.end(); ++iter){
 					//~ cout << "***** " << *iter << endl;
 				//~ }
@@ -74,7 +78,7 @@ int main(int argc, char ** argv){
 				auto startparse=chrono::system_clock::now();
 				parseVector(left, right, sequencesVec, k, seqsToRemoveInSuff, seqsToRemoveInPref,  readsToRemovePref, readsToRemoveSuff);
 				auto endparse=chrono::system_clock::now();auto wParse=endparse-startparse;
-				cout<<"parse took : "<<(chrono::duration_cast<chrono::seconds>(wParse).count())<<" sec"<<endl;
+				//~ cout<<"parse took : "<<(chrono::duration_cast<chrono::seconds>(wParse).count())<<" sec"<<endl;
 				unordered_set <string> malfoySet;
 				unordered_set <string> camilleSet;
 				uint sizeM(0);
@@ -147,7 +151,7 @@ int main(int argc, char ** argv){
 									if (finalSet.count(read.sequence)){
 										finalSet[read.sequence] += 1;
 											cout << read.index << " REPETE: " <<read.sequence <<  " at "<< k <<  endl;
-											cin.get();
+											//~ cin.get();
 									} else {
 										finalSet.insert({read.sequence,1});
 									}
