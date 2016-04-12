@@ -162,7 +162,7 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 	edge beg2 = nPrefix(k, seq2.index, seq2.sequence, true);
 	edge end1 = nSuffix(k, seq1.index, seq1.sequence, true);
 	edge end2 = nSuffix(k, seq2.index, seq2.sequence, true);
-	edge rEnd1 = {end1.index, revComp(end1.sequence),true};
+	edge rEnd1 = {end1.index, revComp(end1.sequence), true};
 	edge rBeg2 = {beg2.index, revComp(beg2.sequence), true};
 	string rSeq2 = revComp(seq2.sequence);
 	if (end1.sequence == beg2.sequence){ //  overlap FF
