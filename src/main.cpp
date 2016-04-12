@@ -66,7 +66,7 @@ int main(int argc, char ** argv){
 				auto endparse=chrono::system_clock::now();auto wParse=endparse-startparse;
 				auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 				cout<<"k: "<<k<<": left.size "<<left.size()<<" right.size "<<right.size()<<" Step took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec "<<endl;
-
+				cout << sequencesVec.size() << endl;
 				
 				/* debug */
 				//~ ifstream readStructFile2(fileName);
@@ -122,6 +122,10 @@ int main(int argc, char ** argv){
 				
 				--k;				
 			} while (k>2);
+			for (uint i(0); i < sequencesVec.size(); ++i){
+				out << ">sequence_" + to_string(sequencesVec[i].index) << endl;
+				out << sequencesVec[i].sequence << endl;
+			}
 			auto endend=chrono::system_clock::now();auto waitedFor2=endend-startChrono;
 			cout<<"whole process took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor2).count())<<" sec"<<endl;
 		}
