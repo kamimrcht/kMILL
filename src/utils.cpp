@@ -112,6 +112,17 @@ string mutate(string& read, uint n){
 }
 
 
+void randGenome(uint size){
+	ofstream out("simulGenome",ios::trunc);
+	string res;
+	for(uint i(0);i<size;++i){
+		res+=randNuc();
+	}
+	out << "genome|size" << size << endl;
+	out << res << endl;
+}
+
+/* random reads */
 void createinputlm(uint lr,uint k){
 	ofstream out("simul",ios::trunc);
 	uint r;

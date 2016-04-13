@@ -19,14 +19,18 @@ using namespace std;
 int main(int argc, char ** argv){
 	if (argc < 3){
 		cout << "command line: ./kMILL reads.fasta k" << endl;
-	} else {
 		//~ srand (34567);
-		srand (time(NULL));
-		//random genome
-		//~ createinputlm(2*1000*1000,100);
+		//~ srand (time(NULL));
+		//random reads
+		//~ createinputlm(100*1000*1000,100);
+		// random genome
+		//~ randGenome(1000000);
 		//genome from ref
-		//~ perfectsReadsFromRef("../ecoliref.fa",100,1*1000*1000);
-		//~ perfectsReadsFromRef("../lambda_virus.fa",100,1*1000*5);
+		//~ perfectsReadsFromRef("simulGenome",100,100*1000*1000);
+		//~ perfectsReadsFromRef("../ecoliref.fa",200,1*1000*1000);
+		perfectsReadsFromRef("../lambda_virus.fa",100,5*100*1000);
+		//~ perfectsReadsFromRef("simulGenome",200,1*1000*1000);
+	} else {
 		auto startChrono=chrono::system_clock::now();
 		string fileName = argv[1];
 		uint k = stoi(argv[2]);

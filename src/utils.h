@@ -16,6 +16,7 @@ string getCanonical(const string& seq);
 /* read generation */
 void createinputlm(uint lr,uint k);
 void perfectsReadsFromRef(const string& refName,uint length,uint nbRead);
+void randGenome(uint size);
 /* debug */
 bool isSubSequenceInSequence(const string& subseq, const string& seq);
 
