@@ -3,7 +3,9 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
+#include <unordered_map>
+#include <unordered_set>
+#include "compaction.h"
 
 
 using namespace std;
@@ -214,5 +216,130 @@ bool isSubSequenceInSequence(const string& subseq, const string& seq){
 		}
 	}
 	return present;
+}
+
+
+void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorNodePref, unordered_set<uint>& colorNodeSuff, unordered_map<uint, uint>& sizesNode){
+    ofstream out("out.dot",ofstream::out);
+    out<<"digraph ham {"<<endl;
+    // title
+    out << "labelloc=\"t\"" << endl ;
+    out << "label = \"k="  << k << "\"" <<  endl;
+    unordered_multimap<string, readStruct> right2seq;
+    unordered_multimap<string, readStruct> left2seq;
+    
+    string begin,end,sequence;
+    
+    for(uint i(0);i<seqV.size();++i){
+		sequence = seqV[i].sequence;
+		cout << seqV[i].index << sequence << endl;
+		if (not sequence.empty()){
+			begin = sequence.substr(0,k);
+			end = sequence.substr(sequence.size() - k,k);
+			if(begin == getCanonical(begin)){
+				left2seq.insert({begin, seqV[i]});
+			}else{
+				right2seq.insert({begin,seqV[i]});
+			}
+			if(end == getCanonical(end)){
+				right2seq.insert({end,seqV[i]});
+			}else{
+				left2seq.insert({end,seqV[i]});
+			}
+		}
+    }
+    uint cbeg;
+    uint cend;
+    for(uint i(0);i<seqV.size();++i){
+        sequence = seqV[i].sequence;
+        begin = sequence.substr(0,k);
+        float width(0.005);
+        float height(0.005);
+        cbeg = 0;
+        cend = 0;
+        
+        if (not sequence.empty()){
+			width *= seqV[i].sequence.size();
+			height *= seqV[i].sequence.size();
+			if (k>2){
+				if(begin == getCanonical(begin)){ // begin would be put in left -> look for overlaps in right
+					auto range = right2seq.equal_range(begin);
+					for(auto it(range.first);it!=range.second;++it){ // type RR or RF overlaps, node with overlap in R overlaps node with overlap in L
+						if (seqV[i].index != it->second.index){
+							cout << "1" << endl;
+							//~ out << it->second.index << "->" << seqV[i].index << endl;
+							++ cbeg;
+						}
+					}
+				}else{ // begin would be in R, look fot overlaps in L
+					if (k == 3){
+						cout << seqV[i].index << begin << endl;
+					}
+					auto range = left2seq.equal_range(getCanonical(begin));
+					for(auto it(range.first);it!=range.second;++it){ // type FF or RF, 1 -> 2
+						if (seqV[i].index != it->second.index){
+							cout << "2" << endl;
+							out <<  seqV[i].index << "->" << it->second.index << endl;
+							++ cend;
+						}
+					}
+				}
+				end = sequence.substr(sequence.size()-k,k);
+				if(end == getCanonical(end)){ // end would be in R
+					auto range = left2seq.equal_range(end);
+					for(auto it(range.first);it!=range.second;++it){ // FF or FR, 1-> 2
+						if (seqV[i].index != it->second.index){
+							cout << "3" << endl;
+							out << seqV[i].index << "->" << it->second.index << endl;
+							++ cend;
+						}
+					}
+				}else{
+					auto range = right2seq.equal_range(getCanonical(end));
+					for(auto it(range.first);it!=range.second;++it){
+						if (seqV[i].index != it->second.index){ // RR or FR, 2->1
+							cout << "4" << endl;
+							//~ out << it->second.index  << "->" << seqV[i].index << endl;
+							++ cbeg;
+						}
+					}
+				}
+			}
+			bool changedSize(false);
+			if (sizesNode.count(seqV[i].index)){
+				if (sizesNode[seqV[i].index] != seqV[i].sequence.size()){
+					changedSize = true;
+					sizesNode[seqV[i].index] = seqV[i].sequence.size();
+				}
+			} else {
+				sizesNode.insert({seqV[i].index, seqV[i].sequence.size()});
+			}
+			if (cbeg > 1){
+				colorNodePref.insert(seqV[i].index);
+			}
+			if (cend > 1){
+				colorNodeSuff.insert(seqV[i].index);
+			}
+			if (not changedSize){
+				if (colorNodePref.count(seqV[i].index)){
+					out << seqV[i].index << "[fillcolor=yellow style=filled width=" << width <<  " height=" << height <<  "]" <<endl; // no more compact wit prefix
+				}else if (colorNodeSuff.count(seqV[i].index)) {
+					out << seqV[i].index << "[fillcolor=blue style=filled width=" << width <<  " height=" << height <<  "]" <<endl; // no more compact with suffix
+				}else{
+					out << seqV[i].index << "[width=" << width <<  " height=" << height <<  "]" <<endl;
+				}
+			} else {
+				//~ cout << "changed" << endl;
+				if (colorNodePref.count(seqV[i].index)){
+					out << seqV[i].index << "[shape=rect fillcolor=yellow style=filled width=" << width <<  " height=" << height <<  "]" <<endl; // no more compact wit prefix
+				}else if (colorNodeSuff.count(seqV[i].index)) {
+					out << seqV[i].index << "[shape=rect fillcolor=blue style=filled width=" << width <<  " height=" << height <<  "]" <<endl; // no more compact with suffix
+				}else{
+					out << seqV[i].index << "[shape=rect width=" << width <<  " height=" << height <<  "]" <<endl;
+				}
+			}
+		}
+    }
+    out<<"}"<<endl;
 }
 /*end debug*/

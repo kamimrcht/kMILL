@@ -1,6 +1,7 @@
 #include <fstream>
 #include <cstring>
 #include <iostream>
+#include <stdio.h>
 #include <chrono>
 #include <vector>
 #include <algorithm>
@@ -24,11 +25,11 @@ int main(int argc, char ** argv){
 		//random reads
 		//~ createinputlm(100*1000*1000,100);
 		// random genome
-		//~ randGenome(1000000);
+		randGenome(1000);
 		//genome from ref
-		//~ perfectsReadsFromRef("simulGenome",100,100*1000*1000);
+		perfectsReadsFromRef("simulGenome",100,100);
 		//~ perfectsReadsFromRef("../ecoliref.fa",200,1*1000*1000);
-		perfectsReadsFromRef("../lambda_virus.fa",100,5*100*1000);
+		//~ perfectsReadsFromRef("../lambda_virus.fa",100,5*100*1000);
 		//~ perfectsReadsFromRef("simulGenome",200,1*1000*1000);
 	} else {
 		auto startChrono=chrono::system_clock::now();
@@ -52,6 +53,9 @@ int main(int argc, char ** argv){
 		unordered_set<string> seqsToRemoveInPref;
 		unordered_set<int> readsToRemovePref;
 		unordered_set<int> readsToRemoveSuff;
+		unordered_set<uint> colorNodePref;
+		unordered_set<uint> colorNodeSuff;
+		unordered_map<uint, uint> sizesNode;
 		if (k>0) {
 			do {
 				auto startChrono=chrono::system_clock::now();
@@ -66,6 +70,25 @@ int main(int argc, char ** argv){
 				}
 				auto endFor=chrono::system_clock::now();auto wFor=endFor-startfor;
 				auto startparse=chrono::system_clock::now();
+				/* debug */
+				if (k == 94){
+					for (uint i(0); i < sequencesVec.size(); ++i){
+						if (sequencesVec[i].index == 52){
+							cout << k << " " << sequencesVec[i].index << " "<< sequencesVec[i].sequence << " "<< sequencesVec[i].sequence.size() << endl;
+						}
+					}
+				}
+				if (k == 93){
+					for (uint i(0); i < sequencesVec.size(); ++i){
+						if (sequencesVec[i].index == 52){
+							cout << k << " " <<sequencesVec[i].index << " "<< sequencesVec[i].sequence <<" "<< sequencesVec[i].sequence.size() <<endl;
+						}
+					}
+				}
+				sequences2dot(sequencesVec, k, colorNodePref, colorNodeSuff, sizesNode);
+				system("dot -Tpng out.dot > output.png");
+				cin.get();
+				/* debug */
 				parseVector(left, right, sequencesVec, k, seqsToRemoveInSuff, seqsToRemoveInPref,  readsToRemovePref, readsToRemoveSuff);
 				auto endparse=chrono::system_clock::now();auto wParse=endparse-startparse;
 				auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
@@ -121,9 +144,13 @@ int main(int argc, char ** argv){
 					//~ cout <<  "inserted elements: " <<inserted << " " << rfound << endl;
 				//~ }
 				/* end debug*/
+
 				
+
 				--k;				
 			} while (k>2);
+			sequences2dot(sequencesVec, k, colorNodePref, colorNodeSuff, sizesNode);
+			system("dot -Tpng out.dot > output.png");
 			for (uint i(0); i < sequencesVec.size(); ++i){
 				if (not sequencesVec[i].sequence.empty()){
 					out << ">sequence_" + to_string(sequencesVec[i].index) << endl;
