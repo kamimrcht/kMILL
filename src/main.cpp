@@ -25,13 +25,21 @@ int main(int argc, char ** argv){
 		//random reads
 		//~ createinputlm(100*1000*1000,100);
 		// random genome
-		randGenome(1000);
+		//~ randGenome(1000000);
 		//genome from ref
-		perfectsReadsFromRef("simulGenome",100,100);
-		//~ perfectsReadsFromRef("../ecoliref.fa",200,1*1000*1000);
-		//~ perfectsReadsFromRef("../lambda_virus.fa",100,5*100*1000);
+		//~ perfectsReadsFromRef("simulGenome",100,1000*1000);
+		//~ perfectsReadsFromRef("../ecoliref.fa",100,4*10*1000*1000);
+		perfectsReadsFromRef("celegansref.fasta", 100, 10*1000*1000);
+		//~ mutateReadsFromRef("../lambda_virus.fa", 100, 50*1000);
 		//~ perfectsReadsFromRef("simulGenome",200,1*1000*1000);
 	} else {
+		bool graph(false);
+		if (argc == 4){
+			string g(argv[3]);
+			if (g == "-g"){
+				graph = true;
+			}
+		}
 		auto startChrono=chrono::system_clock::now();
 		string fileName = argv[1];
 		uint k = stoi(argv[2]);
@@ -71,23 +79,67 @@ int main(int argc, char ** argv){
 				auto endFor=chrono::system_clock::now();auto wFor=endFor-startfor;
 				auto startparse=chrono::system_clock::now();
 				/* debug */
-				if (k == 94){
-					for (uint i(0); i < sequencesVec.size(); ++i){
-						if (sequencesVec[i].index == 52){
-							cout << k << " " << sequencesVec[i].index << " "<< sequencesVec[i].sequence << " "<< sequencesVec[i].sequence.size() << endl;
-						}
-					}
+				//~ for (uint i(0); i<left.size(); ++i){
+					//~ cout << "L "<< left[i].sequence << endl;
+				//~ }
+				//~ for (uint i(0); i<right.size(); ++i){
+					//~ cout << "R "<< right[i].sequence << endl;
+				//~ }
+				//~ if (k == 83){
+					//~ for (auto iter = readsToRemovePref.begin(); iter != readsToRemovePref.end(); ++ iter){
+						//~ if (*iter == 6 or *iter == 8){
+							//~ cout << "no compaction with prefix of " << *iter << endl;
+							//~ cout <<sequencesVec[*iter].sequence << endl;
+						//~ }
+						//~ cout << "not allowed pref " <<  sequencesVec[*iter].index << endl;
+					//~ }
+						
+					//~ for (auto iter = readsToRemoveSuff.begin(); iter != readsToRemoveSuff.end(); ++ iter){
+						//~ if (*iter == 6 or *iter == 8){
+							//~ cout << "no compaction with suffix of " << *iter << endl;
+							//~ cout <<sequencesVec[*iter].sequence << endl;
+						//~ }
+						//~ cout << "not allowed suff " << sequencesVec[*iter].index << endl;
+					//~ }
+						
+
+					//~ for (uint i(0); i < left.size(); ++i){
+						//~ cout << "left" << left[i].index << left[i].sequence << endl;
+					//~ }
+					//~ for (uint i(0); i < right.size(); ++i){
+						//~ cout << "right" << right[i].index << right[i].sequence << endl;
+					//~ }
+					//~ for (uint i(0); i < sequencesVec.size(); ++i){
+						//~ if (sequencesVec[i].index == 83){
+							//~ cout << k << " " << sequencesVec[i].index << " "<< sequencesVec[i].sequence << " "<< sequencesVec[i].sequence.size() << endl;
+						//~ }
+						//~ if (sequencesVec[i].index == 26){
+							//~ cout << k << " " << sequencesVec[i].index << " "<< sequencesVec[i].sequence << " "<< sequencesVec[i].sequence.size() << endl;
+						//~ }
+						//~ if (sequencesVec[i].index == 52){
+							//~ cout << k << " " << sequencesVec[i].index << " "<< sequencesVec[i].sequence << " "<< sequencesVec[i].sequence.size() << endl;
+						//~ }
+					//~ }
+				//~ }
+				//~ if (k == 93){
+					//~ for (uint i(0); i < sequencesVec.size(); ++i){
+						//~ if (sequencesVec[i].index == 83){
+							//~ cout << k << " " <<sequencesVec[i].index << " "<< sequencesVec[i].sequence <<" "<< sequencesVec[i].sequence.size() <<endl;
+						//~ }
+						//~ if (sequencesVec[i].index == 26){
+							//~ cout << k << " " <<sequencesVec[i].index << " "<< sequencesVec[i].sequence <<" "<< sequencesVec[i].sequence.size() <<endl;
+						//~ }
+						//~ if (sequencesVec[i].index == 52){
+							//~ cout << k << " " << sequencesVec[i].index << " "<< sequencesVec[i].sequence << " "<< sequencesVec[i].sequence.size() << endl;
+						//~ }
+					//~ }
+				//~ }
+				if (graph){
+					sequences2dot(sequencesVec, k, colorNodePref, colorNodeSuff, sizesNode);
+					system("dot -Tpng out.dot > output.png");
+					cin.get();
 				}
-				if (k == 93){
-					for (uint i(0); i < sequencesVec.size(); ++i){
-						if (sequencesVec[i].index == 52){
-							cout << k << " " <<sequencesVec[i].index << " "<< sequencesVec[i].sequence <<" "<< sequencesVec[i].sequence.size() <<endl;
-						}
-					}
-				}
-				sequences2dot(sequencesVec, k, colorNodePref, colorNodeSuff, sizesNode);
-				system("dot -Tpng out.dot > output.png");
-				cin.get();
+
 				/* debug */
 				parseVector(left, right, sequencesVec, k, seqsToRemoveInSuff, seqsToRemoveInPref,  readsToRemovePref, readsToRemoveSuff);
 				auto endparse=chrono::system_clock::now();auto wParse=endparse-startparse;
@@ -149,8 +201,10 @@ int main(int argc, char ** argv){
 
 				--k;				
 			} while (k>2);
-			sequences2dot(sequencesVec, k, colorNodePref, colorNodeSuff, sizesNode);
-			system("dot -Tpng out.dot > output.png");
+			if (graph){
+				sequences2dot(sequencesVec, k, colorNodePref, colorNodeSuff, sizesNode);
+				system("dot -Tpng out.dot > output.png");
+			}
 			for (uint i(0); i < sequencesVec.size(); ++i){
 				if (not sequencesVec[i].sequence.empty()){
 					out << ">sequence_" + to_string(sequencesVec[i].index) << endl;
