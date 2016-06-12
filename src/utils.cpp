@@ -95,6 +95,15 @@ string getCanonical(const string& seq){
 }
 
 
+string getStrictCanonical(const string& seq){ // we dont want to compact sequences whose k prefix or suffix is the rev comp of itself (because of repeats)
+	string r(revComp(seq));
+	if(seq != r){
+		return min(seq, r);
+	} else {
+		return "";
+	} 
+}
+
 /* read generation */
 
 char randNuc(){
