@@ -29,8 +29,10 @@ int main(int argc, char ** argv){
 		//genome from ref
 		//~ perfectsReadsFromRef("simulGenome",100,1000*1000);
 		//~ perfectsReadsFromRef("../ecoliref.fa",100,4*10*1000*1000);
-		perfectsReadsFromRef("celegansref.fasta", 100, 10*1000*1000);
-		//~ mutateReadsFromRef("../lambda_virus.fa", 100, 50*1000);
+		//~ perfectsReadsFromRef("../lambda_virus.fa", 100, 2.5*1000);
+		perfectsReadsFromRef("test_2SNP.fa", 10, 100);
+		//~ mutateReadsFromRef("../lambda_virus.fa", 100, 2*1000);
+		//~ mutateReadsFromRef("../lambda_virus_SNP.fa", 100, 2*1000);
 		//~ perfectsReadsFromRef("simulGenome",200,1*1000*1000);
 	} else {
 		bool graph(false);
@@ -79,12 +81,12 @@ int main(int argc, char ** argv){
 				auto endFor=chrono::system_clock::now();auto wFor=endFor-startfor;
 				auto startparse=chrono::system_clock::now();
 				/* debug */
-				//~ for (uint i(0); i<left.size(); ++i){
-					//~ cout << "L "<< left[i].sequence << endl;
-				//~ }
-				//~ for (uint i(0); i<right.size(); ++i){
-					//~ cout << "R "<< right[i].sequence << endl;
-				//~ }
+				for (uint i(0); i<left.size(); ++i){
+					cout << "L "<< left[i].sequence << endl;
+				}
+				for (uint i(0); i<right.size(); ++i){
+					cout << "R "<< right[i].sequence << endl;
+				}
 				//~ if (k == 83){
 					//~ for (auto iter = readsToRemovePref.begin(); iter != readsToRemovePref.end(); ++ iter){
 						//~ if (*iter == 6 or *iter == 8){

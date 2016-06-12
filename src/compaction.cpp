@@ -333,6 +333,7 @@ void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 	if (not readsToRemovePref.unordered_set::count(seq.index)){
 		edge prefix = nPrefix(k, seq.index, seq.sequence, true);
 		string canonPrefix = getCanonical(prefix.sequence);
+		cout << "pref seq "<< prefix.sequence << " canon " << canonPrefix << endl;
 		if (prefix.sequence == canonPrefix){
 			vecLeft.push_back({prefix.index, canonPrefix, true});
 		} else {
@@ -347,6 +348,7 @@ void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 	if (not readsToRemoveSuff.unordered_set::count(seq.index)){
 		edge suffix = nSuffix(k, seq.index, seq.sequence, true);
 		string canonSuffix = getCanonical(suffix.sequence);
+		cout << "suff seq "<< suffix.sequence << " canon " << canonSuffix <<endl; 
 		if (suffix.sequence == canonSuffix){
 			vecRight.push_back({suffix.index, canonSuffix, true});
 		} else {
