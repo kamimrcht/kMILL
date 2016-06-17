@@ -32,7 +32,7 @@ int main(int argc, char ** argv){
 		//~ perfectsReadsFromRef("../lambda_virus.fa", 100, 2.5*1000);
 		//~ perfectsReadsFromRef("test_2SNP.fa", 10, 100);
 		//~ mutateReadsFromRef("../lambda_virus.fa", 100, 2*1000);
-		mutateReadsFromRef("../ecoliref.fa", 100, 5*1000*1000);
+		//~ mutateReadsFromRef("../ecoliref.fa", 100, 5*1000*1000);
 		//~ perfectsReadsFromRef("simulGenome",200,1*1000*1000);
 	} else {
 		bool graph(false);
