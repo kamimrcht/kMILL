@@ -257,7 +257,6 @@ string compactionType(const string& seq1, const string& seq2, uint k){
 	edge end2 = nSuffix(k, 0, seq2, true);
 	edge rEnd1 = {0, revComp(end1.sequence), true};
 	edge rBeg2 = {0, revComp(beg2.sequence), true};
-	//~ string rSeq2 = revComp(seq2.sequence);
 	if (end1.sequence == beg2.sequence){ //  overlap FF
 		return "";
 	} else if (end2.sequence == beg1.sequence) { //  overlap RR
@@ -302,12 +301,6 @@ void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorN
 			}
 		}
     }
-    //~ for (auto i = left2seq.begin(); i != left2seq.end(); ++i){
-		//~ cout << "L " << i->first << endl;
-	//~ }
-	//~ for (auto i = right2seq.begin(); i != right2seq.end(); ++i){
-		//~ cout  << "R "<< i->first << endl;
-	//~ }
     uint cbeg;
     uint cend;
      unordered_set<pair<uint,uint>,pair_hash> nadine;
@@ -340,9 +333,6 @@ void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorN
 								if (type != "RR"){
 									out << seqV[i].index << "->" << it->second.index << "[ label=\"" << type << "\" ];" << endl;
 									nadine.insert({min(seqV[i].index ,it->second.index),max(seqV[i].index ,it->second.index)});
-								} else {
-									//~ out << it->second.index << "->" << seqV[i].index << "[ label=\"" << type << "\" ];" << endl;
-									//~ nadine.insert({min(seqV[i].index ,it->second.index),max(seqV[i].index ,it->second.index)});
 								}
 							}
 						}
@@ -362,10 +352,6 @@ void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorN
 								if (type != "RR"){
 									out << seqV[i].index << "->" << it->second.index << "[ label=\"" << type << "\" ];" << endl;
 									nadine.insert({min(seqV[i].index ,it->second.index),max(seqV[i].index ,it->second.index)});
-								} else {
-									//~ out << it->second.index << "->" << seqV[i].index << "[ label=\"" << type << "\" ];" << endl;
-									//~ ++ cbeg;
-									//~ nadine.insert({min(seqV[i].index ,it->second.index),max(seqV[i].index ,it->second.index)});
 								}
 							}
 						}
@@ -387,11 +373,7 @@ void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorN
 								if (type != "RR"){
 									out << seqV[i].index << "->" << it->second.index << "[ label=\"" << type << "\" ];" << endl;
 									nadine.insert({min(seqV[i].index ,it->second.index),max(seqV[i].index ,it->second.index)});
-								} else {
-									//~ out << it->second.index << "->" << seqV[i].index << "[ label=\"" << type << "\" ];" << endl;
-									//~ ++ cbeg;
-									//~ nadine.insert({min(seqV[i].index ,it->second.index),max(seqV[i].index ,it->second.index)});
-								}
+								} 
 							}
 						}
 					}
@@ -410,11 +392,7 @@ void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorN
 								if (type != "RR"){
 									out << seqV[i].index << "->" << it->second.index << "[ label=\"" << type << "\" ];" << endl;
 									nadine.insert({min(seqV[i].index ,it->second.index),max(seqV[i].index ,it->second.index)});
-								} else {
-									//~ out << it->second.index << "->" << seqV[i].index << "[ label=\"" << type << "\" ];" << endl;
-									//~ ++ cbeg;
-									//~ nadine.insert({min(seqV[i].index ,it->second.index),max(seqV[i].index ,it->second.index)});
-								}
+								} 
 							}
 						}
 					}
@@ -444,7 +422,6 @@ void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorN
 					out << seqV[i].index << "[width=" << width <<  " height=" << height <<  "]" <<endl;
 				}
 			} else {
-				//~ cout << "changed" << endl;
 				if (colorNodePref.count(seqV[i].index)){
 					out << seqV[i].index << "[shape=rect fillcolor=\"white;0.5:red\" style=filled width=" << width <<  " height=" << height <<  "]" <<endl; // no more compact wit prefix
 				}else if (colorNodeSuff.count(seqV[i].index)) {

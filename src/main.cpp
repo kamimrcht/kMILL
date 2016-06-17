@@ -58,11 +58,10 @@ int main(int argc, char ** argv){
 		setreadStructsIndex(sequencesVec);
 		auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 		cout<<"Init took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec"<<endl;
-		//~ uint size(sequencesVec.size());
-		unordered_set<string> seqsToRemoveInSuff;
-		unordered_set<string> seqsToRemoveInPref;
-		unordered_set<int> readsToRemovePref;
-		unordered_set<int> readsToRemoveSuff;
+		//~ unordered_set<string> seqsToRemoveInSuff;
+		//~ unordered_set<string> seqsToRemoveInPref;
+		//~ unordered_set<int> readsToRemovePref;
+		//~ unordered_set<int> readsToRemoveSuff;
 		unordered_set<uint> colorNodePref;
 		unordered_set<uint> colorNodeSuff;
 		unordered_map<uint, uint> sizesNode;
@@ -74,8 +73,8 @@ int main(int argc, char ** argv){
 				auto startfor=chrono::system_clock::now();
 				for (uint i(0); i<sequencesVec.size(); ++i){
 					if (sequencesVec[i].sequence.size() >= k){
-						fillPrefVector(left, right, sequencesVec[i], k, readsToRemovePref);
-						fillSuffVector(left, right, sequencesVec[i], k, readsToRemoveSuff);
+						fillPrefVector(left, right, sequencesVec[i], k);
+						fillSuffVector(left, right, sequencesVec[i], k);
 					}
 				}
 				auto endFor=chrono::system_clock::now();auto wFor=endFor-startfor;
@@ -143,7 +142,7 @@ int main(int argc, char ** argv){
 				}
 
 				/* debug */
-				parseVector(left, right, sequencesVec, k, seqsToRemoveInSuff, seqsToRemoveInPref,  readsToRemovePref, readsToRemoveSuff);
+				parseVector(left, right, sequencesVec, k);
 				auto endparse=chrono::system_clock::now();auto wParse=endparse-startparse;
 				auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 				cout<<"k: "<<k<<": left.size "<<left.size()<<" right.size "<<right.size()<<" Step took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec "<<endl;

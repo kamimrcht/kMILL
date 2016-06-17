@@ -24,46 +24,31 @@ edge nSuffix(uint n, uint index, const string& sequence, bool canon){
 }
 
 /* remove overlaps that are duplicated in vector right, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
-vector<edge> removeNotSinglesInRight(const vector<edge>& vect, unordered_set<string>& seqsToRemoveInPref, unordered_set<string>& seqsToRemoveInSuff, uint k){
+vector<edge> removeNotSinglesInRight(const vector<edge>& vect, uint k){
 	vector<edge> vectResult;
 	uint i(0);
-	bool remove(false);
 	while (i < vect.size()){
 		if (i == 0){
 			if (vect[i].sequence != vect[i+1].sequence){
 				vectResult.push_back(vect[i]);
-			} else {
-				remove = true;
 			}
 		} else if (i == vect.size()-1){
 			if (vect[i].sequence != vect[i-1].sequence){
 				vectResult.push_back(vect[i]);
-			} else {
-				remove = true;
 			}
 		} else {
 			if (vect[i].sequence != vect[i+1].sequence and vect[i].sequence != vect[i-1].sequence){
 				vectResult.push_back(vect[i]);
-			} else {
-				remove = true;
-			}
-		}
-		if (remove == true){
-			if (vect[i].canonical == true){
-				seqsToRemoveInPref.insert(vect[i].sequence);
-			} else {
-				seqsToRemoveInSuff.insert(vect[i].sequence);
 			}
 		}
 		++i;
-		remove = false;
 	}
 	return vectResult;
 }
 
 
 /* remove overlaps that are duplicated in vector left, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
-vector<edge> removeNotSinglesInLeft(const vector<edge>& vect, unordered_set<string>& seqsToRemoveInPref, unordered_set<string>& seqsToRemoveInSuff, uint k){
+vector<edge> removeNotSinglesInLeft(const vector<edge>& vect, uint k){
 	vector<edge> vectResult;
 	uint i(0);
 	bool remove(false);
@@ -71,93 +56,68 @@ vector<edge> removeNotSinglesInLeft(const vector<edge>& vect, unordered_set<stri
 		if (i == 0){
 			if (vect[i].sequence != vect[i+1].sequence){
 				vectResult.push_back(vect[i]);
-			} else {
-				remove = true;
 			}
 		} else if (i == vect.size()-1){
 			if (vect[i].sequence != vect[i-1].sequence){
 				vectResult.push_back(vect[i]);
-			} else {
-				remove = true;
 			}
 		} else {
 			if (vect[i].sequence != vect[i+1].sequence and vect[i].sequence != vect[i-1].sequence){
 				vectResult.push_back(vect[i]);
-			} else {
-				remove = true;
-			}
-		}
-		if (remove == true){
-			if (vect[i].canonical == true){
-				seqsToRemoveInSuff.insert(vect[i].sequence);
-			} else {
-				seqsToRemoveInPref.insert(vect[i].sequence);
 			}
 		}
 		++i;
-		remove = false;
 	}
 	return vectResult;
 }
 
 
 /* from sequences spotted, get reads' index for reads we do not want the prefix to be present in the next pass */ 
-void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove){
-	//~ cout << "rmv prf" << endl;
-	vector<edge> vectResult;
-	uint i(0);
-	while (i < vectL.size()){
-		//~ cout << "size pour mon mari "<< vectL[i].sequence<<endl;
-		//~ cout << "size du sex " << seqsToRemove.size() << endl;
-		if (seqsToRemove.unordered_set::count(vectL[i].sequence)){
-			//~ cout << "1" << endl;
-			if (vectL[i].canonical == true){  // prefix
-				//~ cout << "11" << endl;
-				readsToRemove.insert(vectL[i].index);
-			}
-		}
-		++i;
-	}
-	uint j(0);
-	while (j < vectR.size()){
-		if (seqsToRemove.unordered_set::count(vectR[j].sequence)){
-			//~ cout << "2" << endl;
-			if (vectR[j].canonical == false){  // prefix
-				readsToRemove.insert(vectR[j].index);
-			}
-		}
-		++j;
-	}
-}
+//~ void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove){
+	//~ vector<edge> vectResult;
+	//~ uint i(0);
+	//~ while (i < vectL.size()){
+		//~ if (seqsToRemove.unordered_set::count(vectL[i].sequence)){
+			//~ if (vectL[i].canonical == true){  // prefix
+				//~ readsToRemove.insert(vectL[i].index);
+			//~ }
+		//~ }
+		//~ ++i;
+	//~ }
+	//~ uint j(0);
+	//~ while (j < vectR.size()){
+		//~ if (seqsToRemove.unordered_set::count(vectR[j].sequence)){
+			//~ if (vectR[j].canonical == false){  // prefix
+				//~ readsToRemove.insert(vectR[j].index);
+			//~ }
+		//~ }
+		//~ ++j;
+	//~ }
+//~ }
 
 
 /* from sequences spotted, get reads' index for reads we do not want the suffix to be present in the next pass */ 
-void appendListReadsToRemoveSuff(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove){
-	//~ cout << "rmv sff" << endl;
-	vector<edge> vectResult;
-	uint i(0);
-	while (i < vectL.size()){
-		//~ cout << "size pour mon mari "<< vectL[i].sequence<<endl;
-		//~ cout << "size du sex " << seqsToRemove.size() << endl;
-		if (seqsToRemove.unordered_set::count(vectL[i].sequence)){
-			//~ cout << "3" << endl;
-			if (vectL[i].canonical == false){  // suffix
-				readsToRemove.insert(vectL[i].index);
-			}
-		}
-		++i;
-	}
-	uint j(0);
-	while (j < vectR.size()){
-		if (seqsToRemove.unordered_set::count(vectR[j].sequence)){
-			//~ cout << "4" << endl;
-			if (vectR[j].canonical == true){  // suffix
-				readsToRemove.insert(vectR[j].index);
-			}
-		}
-		++j;
-	}
-}
+//~ void appendListReadsToRemoveSuff(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove){
+	//~ vector<edge> vectResult;
+	//~ uint i(0);
+	//~ while (i < vectL.size()){
+		//~ if (seqsToRemove.unordered_set::count(vectL[i].sequence)){
+			//~ if (vectL[i].canonical == false){  // suffix
+				//~ readsToRemove.insert(vectL[i].index);
+			//~ }
+		//~ }
+		//~ ++i;
+	//~ }
+	//~ uint j(0);
+	//~ while (j < vectR.size()){
+		//~ if (seqsToRemove.unordered_set::count(vectR[j].sequence)){
+			//~ if (vectR[j].canonical == true){  // suffix
+				//~ readsToRemove.insert(vectR[j].index);
+			//~ }
+		//~ }
+		//~ ++j;
+	//~ }
+//~ }
 
 
 
@@ -167,8 +127,7 @@ bool compareEdgeByString(const edge& seqL, const edge& seqR){
 
 
 /*  compaction of two unitigs if they have a k-overlap */
-string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unordered_set<int>& readsToRemovePref, unordered_set<int>& readsToRemoveSuff){
-	
+string compaction(const readStruct& seq1, const readStruct& seq2, uint k){
 	edge beg1 = nPrefix(k, seq1.index, seq1.sequence, true);
 	edge beg2 = nPrefix(k, seq2.index, seq2.sequence, true);
 	edge end1 = nSuffix(k, seq1.index, seq1.sequence, true);
@@ -181,20 +140,17 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 		bool b(isCanonical(compacted));
 		if (not b){ // read's prefix will become its suffix and read's suffix will become its prefix
 			string compactedToReturn(getCanonical(compacted));
-			if (readsToRemovePref.unordered_set::count(seq1.index)){
-				//~ cout <<  "AAAAAAAAAAAA" << endl;
-				readsToRemoveSuff.insert(seq1.index);
-			}
-			if (readsToRemoveSuff.unordered_set::count(seq2.index)){
-				//~ cout << "BBBBBBBBBBBBBB" << endl;
-				readsToRemovePref.insert(seq1.index);
-			}
+			//~ if (readsToRemovePref.unordered_set::count(seq1.index)){
+				//~ readsToRemoveSuff.insert(seq1.index);
+			//~ }
+			//~ if (readsToRemoveSuff.unordered_set::count(seq2.index)){
+				//~ readsToRemovePref.insert(seq1.index);
+			//~ }
 			return compactedToReturn;
 		} else { // register read's new suffix (the sequence 2's suffix)
-			//~ cout << "CCCCCCCCCCCC" << endl;
-			if (readsToRemoveSuff.unordered_set::count(seq2.index)){
-				readsToRemoveSuff.insert(seq1.index);
-			}
+			//~ if (readsToRemoveSuff.unordered_set::count(seq2.index)){
+				//~ readsToRemoveSuff.insert(seq1.index);
+			//~ }
 			return compacted;
 		}
 	} else if (end2.sequence == beg1.sequence) { //  overlap RR
@@ -202,15 +158,14 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 		bool b(isCanonical(compacted));
 		if (not b){
 			string compactedToReturn(getCanonical(compacted));
-			if (readsToRemoveSuff.unordered_set::count(seq1.index)){
-				readsToRemovePref.insert(seq1.index);
-			}
-			if (readsToRemovePref.unordered_set::count(seq2.index)){
-				readsToRemoveSuff.insert(seq1.index);
-			}
+			//~ if (readsToRemoveSuff.unordered_set::count(seq1.index)){
+				//~ readsToRemovePref.insert(seq1.index);
+			//~ }
+			//~ if (readsToRemovePref.unordered_set::count(seq2.index)){
+				//~ readsToRemoveSuff.insert(seq1.index);
+			//~ }
 			return compactedToReturn;
 		} else { // register read's new prefix
-			//~ readsToRemovePref.erase(seq2.index);
 			return compacted;
 		}
 	} else if (rEnd1.sequence == end2.sequence) { //  overlap FR
@@ -218,37 +173,35 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 		bool b(isCanonical(compacted));
 		if (not b){ // new suffix is the read 1's prefix, new prefix is read 2's prefix
 			string compactedToReturn(getCanonical(compacted));
-			if (readsToRemovePref.unordered_set::count(seq1.index)){
-				readsToRemoveSuff.insert(seq1.index);
-			}
-			if (readsToRemovePref.unordered_set::count(seq2.index)){
-				readsToRemovePref.insert(seq1.index);
-			}
+			//~ if (readsToRemovePref.unordered_set::count(seq1.index)){
+				//~ readsToRemoveSuff.insert(seq1.index);
+			//~ }
+			//~ if (readsToRemovePref.unordered_set::count(seq2.index)){
+				//~ readsToRemovePref.insert(seq1.index);
+			//~ }
 			return compactedToReturn;
 		} else { // register read's new suffix which is read 2's prefix
-			if (readsToRemovePref.unordered_set::count(seq2.index)){
-				readsToRemoveSuff.insert(seq1.index);
-			}
+			//~ if (readsToRemovePref.unordered_set::count(seq2.index)){
+				//~ readsToRemoveSuff.insert(seq1.index);
+			//~ }
 			return compacted;
 		}
 	} else if (beg1.sequence == rBeg2.sequence){ //  overlap RF
 		string compacted(rSeq2 + seq1.sequence.substr(k));
-		/* tests */
-		//~ string compactedToReturn(getCanonical(compacted));
 		bool b(isCanonical(compacted));
 		if (not b){ // new read's suffix is read 2's suffix, new read's prefix is read 1's suffix
 			string compactedToReturn(getCanonical(compacted));
-			if (readsToRemoveSuff.unordered_set::count(seq1.index)){
-				readsToRemovePref.insert(seq1.index);
-			}
-			if (readsToRemoveSuff.unordered_set::count(seq2.index)){
-				readsToRemoveSuff.insert(seq1.index);
-			}
+			//~ if (readsToRemoveSuff.unordered_set::count(seq1.index)){
+				//~ readsToRemovePref.insert(seq1.index);
+			//~ }
+			//~ if (readsToRemoveSuff.unordered_set::count(seq2.index)){
+				//~ readsToRemoveSuff.insert(seq1.index);
+			//~ }
 			return compactedToReturn;
 		} else { // register read's new prefix which is read 2's suffix
-			if (readsToRemoveSuff.unordered_set::count(seq2.index)){
-				readsToRemovePref.insert(seq1.index);
-			}
+			//~ if (readsToRemoveSuff.unordered_set::count(seq2.index)){
+				//~ readsToRemovePref.insert(seq1.index);
+			//~ }
 			return compacted;
 		}
 	} else {
@@ -259,30 +212,30 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 
 
 /*  Recursive func to compact unitigs (if they are sequences or indexes)). If two unitigs are compacted the result replaces one of them, the other becomes "" and keeps the index of its mate. */
-void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k, unordered_set<int>& readsToRemovePref, unordered_set<int>& readsToRemoveSuff){
+void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k){
 	if (not vec[indexreadStruct1].sequence.empty()){
 		if (not vec[indexreadStruct2].sequence.empty()){
-			string c = compaction(vec[indexreadStruct1], vec[indexreadStruct2], k, readsToRemovePref, readsToRemoveSuff);
+			string c = compaction(vec[indexreadStruct1], vec[indexreadStruct2], k);
 			if (not c.empty()){
 				vec[indexreadStruct1] = {vec[indexreadStruct1].index, c};
 				vec[indexreadStruct2].index = vec[indexreadStruct1].index;
 				vec[indexreadStruct2].sequence = "";
 			}
 		} else {
-			compactInVector(vec, indexreadStruct1, vec[indexreadStruct2].index, k,  readsToRemovePref, readsToRemoveSuff); //  each time a sequence is empty, the index leads to the sequence it's been compacted in-> recursive call until we find the sequence
+			compactInVector(vec, indexreadStruct1, vec[indexreadStruct2].index, k); //  each time a sequence is empty, the index leads to the sequence it's been compacted in-> recursive call until we find the sequence
 		}
 	} else {
 		if (not vec[indexreadStruct2].sequence.empty()){
-			compactInVector(vec, vec[indexreadStruct1].index, indexreadStruct2, k, readsToRemovePref, readsToRemoveSuff);
+			compactInVector(vec, vec[indexreadStruct1].index, indexreadStruct2, k);
 		} else {
-			compactInVector(vec, vec[indexreadStruct1].index, vec[indexreadStruct2].index, k, readsToRemovePref, readsToRemoveSuff);
+			compactInVector(vec, vec[indexreadStruct1].index, vec[indexreadStruct2].index, k);
 		}
 	}
 }
 
 
 /*  checks from the suffixes and prefixes of pairs of unitigs if they can be compacted. Appends overlaps that should be removed in the next pass. */
-void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k, unordered_set<string>& seqsToRemoveInSuff, unordered_set<string>& seqsToRemoveInPref, unordered_set<int>& readsToRemovePref, unordered_set<int>& readsToRemoveSuff){
+void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k){
 	uint compac(0);
 	sort(left.begin(), left.end(), compareEdge());
 	sort(right.begin(), right.end(), compareEdge());
@@ -291,26 +244,22 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 	vector<edge> leftSingles;
 	vector<edge> rightSingles;
 	if (left.size()>1){
-		leftSingles = removeNotSinglesInLeft(left, seqsToRemoveInPref, seqsToRemoveInSuff, k);
+		leftSingles = removeNotSinglesInLeft(left, k);
 	} else {
 		leftSingles = left;
 	}
 	if (right.size()>1){
-		rightSingles = removeNotSinglesInRight(right, seqsToRemoveInPref, seqsToRemoveInSuff, k);
+		rightSingles = removeNotSinglesInRight(right, k);
 	} else {
 		rightSingles = right;
 	}
-	//~ cout << "SIZE " << seqsToRemoveInPref.size() << endl;
-	//~ cout << "SIZE " <<  seqsToRemoveInSuff.size() << endl;
-	appendListReadsToRemovePref(leftSingles, rightSingles, seqsToRemoveInPref, readsToRemovePref);
-	appendListReadsToRemoveSuff(leftSingles, rightSingles, seqsToRemoveInSuff, readsToRemoveSuff);
-	//~ cout << "SIZE " << readsToRemovePref.size() << endl;
-	//~ cout << "SIZE " <<  readsToRemoveSuff.size() << endl;
+	//~ appendListReadsToRemovePref(leftSingles, rightSingles);
+	//~ appendListReadsToRemoveSuff(leftSingles, rightSingles);
 	uint indexL(0),indexR(0);
 	while (indexL < leftSingles.size() and indexR < rightSingles.size()){
 		if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
 			if (leftSingles[indexL].index != rightSingles[indexR].index){
-				compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k,  readsToRemovePref, readsToRemoveSuff);
+				compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k);
 				++compac;
 			}
 			++indexL;
@@ -323,14 +272,12 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 			}
 		}
 	}
-	//~ cout << "SIZE " << readsToRemovePref.size() << endl;
-	//~ cout << "SIZE " <<  readsToRemoveSuff.size() << endl;
 }
 
 
 /* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
-void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemovePref){
-	if (not readsToRemovePref.unordered_set::count(seq.index)){
+void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k){
+	//~ if (not readsToRemovePref.unordered_set::count(seq.index)){
 		edge prefix = nPrefix(k, seq.index, seq.sequence, true);
 		string canonPrefix = getStrictCanonical(prefix.sequence);
 		if (not canonPrefix.empty()){ // if is empty, it means the prefix is the rc of itself, we dont we want add it to the vector
@@ -340,13 +287,13 @@ void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 				vecRight.push_back({prefix.index, canonPrefix, false});
 			}
 		}
-	}
+	//~ }
 }
 
 
 /* fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs */
-void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemoveSuff){
-	if (not readsToRemoveSuff.unordered_set::count(seq.index)){
+void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k){
+	//~ if (not readsToRemoveSuff.unordered_set::count(seq.index)){
 		edge suffix = nSuffix(k, seq.index, seq.sequence, true);
 		string canonSuffix = getStrictCanonical(suffix.sequence);
 		if (not canonSuffix.empty()){ // if is empty, it means the suffix is the rc of itself, we dont we want add it to the vector
@@ -356,7 +303,7 @@ void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 				vecLeft.push_back({suffix.index, canonSuffix, false});
 			}
 		}
-	}
+	//~ }
 }
 
 
