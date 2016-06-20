@@ -12,6 +12,7 @@
 
 using namespace std;
 
+string getFileName(const string& s);
 bool isCanonical(const string& seq);
 char revCompChar(char c);
 string revComp(const string& seq);

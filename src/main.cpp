@@ -11,6 +11,7 @@
 #include "ograph.h"
 #include <unordered_set>
 #include <unordered_map>
+#include <set>
 
 
 using namespace std;
@@ -32,7 +33,7 @@ int main(int argc, char ** argv){
 		//~ perfectsReadsFromRef("../lambda_virus.fa", 100, 2.5*1000);
 		//~ perfectsReadsFromRef("test_2SNP.fa", 10, 100);
 		//~ mutateReadsFromRef("../lambda_virus.fa", 100, 2*1000);
-		mutateReadsFromRef("../ecoliref.fa", 100, 5*1000*1000);
+		//~ mutateReadsFromRef("../ecoliref.fa", 100, 5*1000*1000);
 		//~ perfectsReadsFromRef("simulGenome",200,1*1000*1000);
 	} else {
 		bool graph(false);
@@ -48,7 +49,14 @@ int main(int argc, char ** argv){
 		ifstream readStructFile(fileName);
 		uint nbBuckets(1);
 		vector <ofstream> outFiles(nbBuckets);
-		ofstream out("out_k"+to_string(k)+ "_" + fileName +".fa");
+		string titre("out_k"+to_string(k)+ "_" + getFileName(fileName) +".fa");
+		//~ cout<<titre<<endl;
+		ofstream out(titre);
+		//~ out<<"lol"<<endl;
+		//~ cout<<"lol"<<endl;
+		//~ cout << getFileName(fileName);
+	//~ cin.get();
+
 		string sequence,sequence2;
 		vector <readStruct> sequencesVec;
 		openBuckets(outFiles);

@@ -11,6 +11,16 @@
 using namespace std;
 
 
+string getFileName(const string& s) {
+
+   char sep = '/';
+   size_t i = s.rfind(sep, s.length());
+   if (i != string::npos) {
+      return(s.substr(i+1, s.length() - i));
+   }
+   return("");
+}
+
 struct pair_hash {
     inline std::size_t operator()(const std::pair<int,int> & v) const {
         return v.first*31+v.second;
