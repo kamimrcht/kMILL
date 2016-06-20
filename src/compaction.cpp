@@ -107,12 +107,8 @@ void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& 
 	vector<edge> vectResult;
 	uint i(0);
 	while (i < vectL.size()){
-		//~ cout << "size pour mon mari "<< vectL[i].sequence<<endl;
-		//~ cout << "size du sex " << seqsToRemove.size() << endl;
 		if (seqsToRemove.unordered_set::count(vectL[i].sequence)){
-			//~ cout << "1" << endl;
 			if (vectL[i].canonical == true){  // prefix
-				//~ cout << "11" << endl;
 				readsToRemove.insert(vectL[i].index);
 			}
 		}
@@ -121,7 +117,6 @@ void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& 
 	uint j(0);
 	while (j < vectR.size()){
 		if (seqsToRemove.unordered_set::count(vectR[j].sequence)){
-			//~ cout << "2" << endl;
 			if (vectR[j].canonical == false){  // prefix
 				readsToRemove.insert(vectR[j].index);
 			}
@@ -133,14 +128,10 @@ void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& 
 
 /* from sequences spotted, get reads' index for reads we do not want the suffix to be present in the next pass */ 
 void appendListReadsToRemoveSuff(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove){
-	//~ cout << "rmv sff" << endl;
 	vector<edge> vectResult;
 	uint i(0);
 	while (i < vectL.size()){
-		//~ cout << "size pour mon mari "<< vectL[i].sequence<<endl;
-		//~ cout << "size du sex " << seqsToRemove.size() << endl;
 		if (seqsToRemove.unordered_set::count(vectL[i].sequence)){
-			//~ cout << "3" << endl;
 			if (vectL[i].canonical == false){  // suffix
 				readsToRemove.insert(vectL[i].index);
 			}
@@ -150,7 +141,6 @@ void appendListReadsToRemoveSuff(const vector<edge>& vectL, const vector<edge>& 
 	uint j(0);
 	while (j < vectR.size()){
 		if (seqsToRemove.unordered_set::count(vectR[j].sequence)){
-			//~ cout << "4" << endl;
 			if (vectR[j].canonical == true){  // suffix
 				readsToRemove.insert(vectR[j].index);
 			}
@@ -182,16 +172,13 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 		if (not b){ // read's prefix will become its suffix and read's suffix will become its prefix
 			string compactedToReturn(getCanonical(compacted));
 			if (readsToRemovePref.unordered_set::count(seq1.index)){
-				//~ cout <<  "AAAAAAAAAAAA" << endl;
 				readsToRemoveSuff.insert(seq1.index);
 			}
 			if (readsToRemoveSuff.unordered_set::count(seq2.index)){
-				//~ cout << "BBBBBBBBBBBBBB" << endl;
 				readsToRemovePref.insert(seq1.index);
 			}
 			return compactedToReturn;
 		} else { // register read's new suffix (the sequence 2's suffix)
-			//~ cout << "CCCCCCCCCCCC" << endl;
 			if (readsToRemoveSuff.unordered_set::count(seq2.index)){
 				readsToRemoveSuff.insert(seq1.index);
 			}
@@ -210,7 +197,6 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 			}
 			return compactedToReturn;
 		} else { // register read's new prefix
-			//~ readsToRemovePref.erase(seq2.index);
 			return compacted;
 		}
 	} else if (rEnd1.sequence == end2.sequence) { //  overlap FR
@@ -233,8 +219,6 @@ string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unorde
 		}
 	} else if (beg1.sequence == rBeg2.sequence){ //  overlap RF
 		string compacted(rSeq2 + seq1.sequence.substr(k));
-		/* tests */
-		//~ string compactedToReturn(getCanonical(compacted));
 		bool b(isCanonical(compacted));
 		if (not b){ // new read's suffix is read 2's suffix, new read's prefix is read 1's suffix
 			string compactedToReturn(getCanonical(compacted));
@@ -300,12 +284,8 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 	} else {
 		rightSingles = right;
 	}
-	//~ cout << "SIZE " << seqsToRemoveInPref.size() << endl;
-	//~ cout << "SIZE " <<  seqsToRemoveInSuff.size() << endl;
 	appendListReadsToRemovePref(leftSingles, rightSingles, seqsToRemoveInPref, readsToRemovePref);
 	appendListReadsToRemoveSuff(leftSingles, rightSingles, seqsToRemoveInSuff, readsToRemoveSuff);
-	//~ cout << "SIZE " << readsToRemovePref.size() << endl;
-	//~ cout << "SIZE " <<  readsToRemoveSuff.size() << endl;
 	uint indexL(0),indexR(0);
 	while (indexL < leftSingles.size() and indexR < rightSingles.size()){
 		if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
@@ -323,8 +303,6 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 			}
 		}
 	}
-	//~ cout << "SIZE " << readsToRemovePref.size() << endl;
-	//~ cout << "SIZE " <<  readsToRemoveSuff.size() << endl;
 }
 
 
