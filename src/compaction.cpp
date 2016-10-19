@@ -23,6 +23,7 @@ edge nSuffix(uint n, uint index, const string& sequence, bool canon){
 	return {index, sequence.substr(sequence.size()-n, n), canon};
 }
 
+
 /* remove overlaps that are duplicated in vector right, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
 vector<edge> removeNotSinglesInRight(const vector<edge>& vect, unordered_set<string>& seqsToRemoveInPref, unordered_set<string>& seqsToRemoveInSuff, uint k){
 	vector<edge> vectResult;
@@ -101,7 +102,7 @@ vector<edge> removeNotSinglesInLeft(const vector<edge>& vect, unordered_set<stri
 }
 
 
-/* from sequences spotted, get reads' index for reads we do not want the prefix to be present in the next pass */ 
+/* from sequences spotted, get reads' index for reads we do not want the prefix to be present in the next pass */
 void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove){
 	//~ cout << "rmv prf" << endl;
 	vector<edge> vectResult;
@@ -126,7 +127,7 @@ void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& 
 }
 
 
-/* from sequences spotted, get reads' index for reads we do not want the suffix to be present in the next pass */ 
+/* from sequences spotted, get reads' index for reads we do not want the suffix to be present in the next pass */
 void appendListReadsToRemoveSuff(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove){
 	vector<edge> vectResult;
 	uint i(0);
@@ -158,7 +159,6 @@ bool compareEdgeByString(const edge& seqL, const edge& seqR){
 
 /*  compaction of two unitigs if they have a k-overlap */
 string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unordered_set<int>& readsToRemovePref, unordered_set<int>& readsToRemoveSuff){
-	
 	edge beg1 = nPrefix(k, seq1.index, seq1.sequence, true);
 	edge beg2 = nPrefix(k, seq2.index, seq2.sequence, true);
 	edge end1 = nSuffix(k, seq1.index, seq1.sequence, true);
@@ -307,10 +307,10 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 
 
 /* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
-void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemovePref){
+void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemovePref,string& rev, string& canonPrefix){
 	if (not readsToRemovePref.unordered_set::count(seq.index)){
 		edge prefix = nPrefix(k, seq.index, seq.sequence, true);
-		string canonPrefix = getStrictCanonical(prefix.sequence);
+		canonPrefix = getStrictCanonical2(prefix.sequence,rev);
 		if (not canonPrefix.empty()){ // if is empty, it means the prefix is the rc of itself, we dont we want add it to the vector
 			if (prefix.sequence == canonPrefix){
 				vecLeft.push_back({prefix.index, canonPrefix, true});
@@ -323,10 +323,10 @@ void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 
 
 /* fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs */
-void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemoveSuff){
+void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemoveSuff,string& rev, string& canonSuffix){
 	if (not readsToRemoveSuff.unordered_set::count(seq.index)){
 		edge suffix = nSuffix(k, seq.index, seq.sequence, true);
-		string canonSuffix = getStrictCanonical(suffix.sequence);
+		canonSuffix = getStrictCanonical2(suffix.sequence,rev);
 		if (not canonSuffix.empty()){ // if is empty, it means the suffix is the rc of itself, we dont we want add it to the vector
 			if (suffix.sequence == canonSuffix){
 				vecRight.push_back({suffix.index, canonSuffix, true});
@@ -340,6 +340,8 @@ void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 
 /* remove duplicates in reads*/
 void cleanDuplicatesInreadStructs(vector <readStruct>& vec){
+	//~ return;
+	//~ cout<<vec.size()<<endl;
 	uint i(0);
 	string previousSeq("");
 	while(i<vec.size()){
@@ -354,11 +356,46 @@ void cleanDuplicatesInreadStructs(vector <readStruct>& vec){
 }
 
 
+void cleanDuplicatesInreadStructs2(vector <readStruct>& vec){
+//TODO PARAMETER HERE
+	uint i(1);
+	string previousSeq(vec[0].sequence);
+	bool good(false);
+	while(i<vec.size()){
+		string temp = vec[i].sequence;
+		if (temp == previousSeq){
+			vec[i].sequence = "";
+			good=true;
+		}else{
+			if(not good){
+				vec[i-1].sequence="";
+			}
+			previousSeq = temp;
+			good=false;
+		}
+		++i;
+	}
+}
+
+
 /* give a proper index to reads */
 void setreadStructsIndex(vector <readStruct>& vec){
 	for (uint i(0); i<vec.size(); ++i){
+		//~ cout<<vec[i].sequence<<endl;
 		if (not vec[i].sequence.empty()){
 			vec[i].index = i;
+		}
+	}
+}
+
+
+void printReadStructsIndex(vector <readStruct>& vec,const string& outfileName){
+	ofstream out(outfileName);
+	for (uint i(0); i<vec.size(); ++i){
+		if (not vec[i].sequence.empty()){
+			out<<">"+to_string(i)<<endl;
+			out<<vec[i].sequence<<endl;
+			//~ cin.get();
 		}
 	}
 }

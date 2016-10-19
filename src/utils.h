@@ -27,4 +27,5 @@ void randGenome(uint size);
 bool isSubSequenceInSequence(const string& subseq, const string& seq);
 void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorNodePref, unordered_set<uint>& colorNodeSuff, unordered_map<uint, uint>& sizesNode);
 string compactionType(const string& seq1, const string& seq2, uint k);
+string getStrictCanonical2(const string& seq, string&rev);
 #endif

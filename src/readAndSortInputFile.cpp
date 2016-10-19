@@ -42,7 +42,7 @@ void openBuckets(vector<ofstream>& outFiles){
 
 
 /* get sequences from all buckets, sort them and remove duplicated reads */
-void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec){
+void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec, bool dupli){
 	uint index(0);
 	vector <readStruct> seqVecFile;
 	string seq;
@@ -56,7 +56,11 @@ void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec){
 			}
 		}
 		sort(seqVecFile.begin(), seqVecFile.end(), compareRead());
-		cleanDuplicatesInreadStructs(seqVecFile);
+		if(dupli){
+			cleanDuplicatesInreadStructs2(seqVecFile);
+		}else{
+			cleanDuplicatesInreadStructs(seqVecFile);
+			}
 		for (uint i(0); i < seqVecFile.size(); ++i){
 			if (not seqVecFile[i].sequence.empty()){
 				seqVecFile[i].index = index;

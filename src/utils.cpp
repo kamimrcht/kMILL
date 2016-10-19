@@ -65,8 +65,19 @@ bool isCanonical(const string& seq){
 	}
 }
 
+string revcompstroptimization;
+
 
 // optimized
+//~ string revComp(const string& s){
+	//~ revcompstroptimization.assign(s.size(),0);
+	//~ for (int i((int)s.length() - 1); i >= 0; i--){
+		//~ revcompstroptimization[s.size()-1-i] = revCompChar(s[i]);
+	//~ }
+	//~ return revcompstroptimization;
+//~ }
+
+
 string revComp(const string& s){
 	string rc(s.size(),0);
 	for (int i((int)s.length() - 1); i >= 0; i--){
@@ -111,11 +122,23 @@ string getStrictCanonical(const string& seq){ // we dont want to compact sequenc
 		return min(seq, r);
 	} else {
 		return "";
-	} 
+	}
 }
 
-/* read generation */
 
+
+string getStrictCanonical2(const string& seq, string&rev){ // we dont want to compact sequences whose k prefix or suffix is the rev comp of itself (because of repeats)
+	rev=(revComp(seq));
+	if(seq != rev){
+		return min(seq, rev);
+	} else {
+		return "";
+	}
+}
+
+
+
+/* read generation */
 char randNuc(){
 	switch (rand()%4){
 		case 0:
@@ -291,9 +314,9 @@ void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorN
     out << "label = \"k="  << k << "\"" <<  endl;
     unordered_multimap<string, readStruct> right2seq;
     unordered_multimap<string, readStruct> left2seq;
-    
+
     string begin, end, sequence;
-    
+
     for(uint i(0);i<seqV.size();++i){
 		sequence = seqV[i].sequence;
 		if (not sequence.empty()){
@@ -330,8 +353,8 @@ void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorN
         uint notusebeginf(0);
         uint notuseendf(0);
         uint notuseendp(0);
-       
-        
+
+
         if (not sequence.empty()){
 			width *= seqV[i].sequence.size();
 			height *= seqV[i].sequence.size();
