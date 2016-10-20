@@ -33,7 +33,7 @@ int main(int argc, char ** argv){
 		vector <readStruct> sequencesVec;
 		openBuckets(outFiles);
 		createReadBuckets(nbBuckets, readStructFile, outFiles);
-		fillSortCleanBuckets(nbBuckets, sequencesVec,false);
+		fillSortCleanBuckets(nbBuckets, sequencesVec,true);
 		removeReadFiles(nbBuckets);
 		setreadStructsIndex(sequencesVec);
 		printReadStructsIndex(sequencesVec,"noduplicate.fa");
