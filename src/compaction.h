@@ -5,10 +5,16 @@
 #include <algorithm>
 #include <unordered_set>
 
+
+
 #ifndef COMPACTION
 #define COMPACTION
 
+
+
 using namespace std;
+
+
 
 struct edge{
   uint index;
@@ -17,10 +23,12 @@ struct edge{
 };
 
 
+
 struct readStruct{
   uint index;
   string sequence;
 };
+
 
 
 struct compareEdge{
@@ -30,6 +38,7 @@ struct compareEdge{
 };
 
 
+
 struct compareRead{
     bool operator()(const readStruct& seqL, const readStruct& seqR){
         return seqL.sequence <seqR.sequence;
@@ -37,11 +46,13 @@ struct compareRead{
 };
 
 
+
 struct compareRead2{
     bool operator()(const readStruct& seqL, const readStruct& seqR){
         return seqL.sequence <seqR.sequence;
     }
 };
+
 
 
 edge nPrefix(uint n, uint index, const string& sequence, bool canon);
@@ -57,11 +68,13 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemovePref);  /* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
 void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemoveSuff);  /* fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs */
 void cleanDuplicatesInreadStructs(vector <readStruct>& vec);  /* remove duplicates in reads*/
-void cleanDuplicatesInreadStructs2(vector <readStruct>& vec);  /* remove duplicates in reads*/
+void cleanDuplicatesInreadStructs2(vector <readStruct>& vec,uint lol);  /* remove duplicates in reads*/
 void setreadStructsIndex(vector <readStruct>& vec);  /* give a proper index to reads */
 void initVectofreadStructs(vector <readStruct>& vec, const string& sequence);
 void printReadStructsIndex(vector <readStruct>& vec,const string& outfileName);
 void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemoveSuff,string& rev, string& canon);
 void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemovePref,string& rev, string& canonPrefix);
+
+
 
 #endif

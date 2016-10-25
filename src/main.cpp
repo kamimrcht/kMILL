@@ -23,24 +23,6 @@ int main(int argc, char ** argv){
 		cout << "command line: ./kMILL reads.fasta k" << endl;
 		return 0;
 	}
-	if (argc == 2){
-		auto startChrono=chrono::system_clock::now();
-		string fileName = argv[1];
-		ifstream readStructFile(fileName);
-		uint nbBuckets(1);
-		vector <ofstream> outFiles(nbBuckets);
-		string sequence,sequence2;
-		vector <readStruct> sequencesVec;
-		openBuckets(outFiles);
-		createReadBuckets(nbBuckets, readStructFile, outFiles);
-		fillSortCleanBuckets(nbBuckets, sequencesVec,true);
-		removeReadFiles(nbBuckets);
-		setreadStructsIndex(sequencesVec);
-		printReadStructsIndex(sequencesVec,"noduplicate.fa");
-		auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
-		cout<<"Init took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec"<<endl;
-		return 0;
-	}
 	bool graph(false);
 	if (argc == 4){
 		string g(argv[3]);
@@ -52,6 +34,10 @@ int main(int argc, char ** argv){
 	string fileName = argv[1];
 	uint k = stoi(argv[2]);
 	ifstream readStructFile(fileName);
+	if(not readStructFile){
+		cout<<"No such file ..."<<endl;
+		return 1;
+	}
 	uint nbBuckets(1);
 	vector <ofstream> outFiles(nbBuckets);
 	string titre("out_k"+to_string(k)+ "_" + getFileName(fileName) +".fa");
@@ -61,7 +47,7 @@ int main(int argc, char ** argv){
 	vector <readStruct> sequencesVec;
 	openBuckets(outFiles);
 	createReadBuckets(nbBuckets, readStructFile, outFiles);
-	fillSortCleanBuckets(nbBuckets, sequencesVec,false);
+	fillSortCleanBuckets(nbBuckets, sequencesVec,0);
 	removeReadFiles(nbBuckets);
 	setreadStructsIndex(sequencesVec);
 	cout<<sequencesVec.size()<<endl;

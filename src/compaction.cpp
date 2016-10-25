@@ -7,11 +7,12 @@
 #include "utils.h"
 #include "compaction.h"
 #include "ograph.h"
-
 #include <chrono>
 
 
+
 using namespace std;
+
 
 
 edge nPrefix(uint n, uint index, const string& sequence, bool canon){
@@ -19,9 +20,11 @@ edge nPrefix(uint n, uint index, const string& sequence, bool canon){
 }
 
 
+
 edge nSuffix(uint n, uint index, const string& sequence, bool canon){
 	return {index, sequence.substr(sequence.size()-n, n), canon};
 }
+
 
 
 /* remove overlaps that are duplicated in vector right, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
@@ -61,6 +64,7 @@ vector<edge> removeNotSinglesInRight(const vector<edge>& vect, unordered_set<str
 	}
 	return vectResult;
 }
+
 
 
 /* remove overlaps that are duplicated in vector left, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
@@ -356,22 +360,23 @@ void cleanDuplicatesInreadStructs(vector <readStruct>& vec){
 }
 
 
-void cleanDuplicatesInreadStructs2(vector <readStruct>& vec){
-//TODO PARAMETER HERE
+void cleanDuplicatesInreadStructs2(vector <readStruct>& vec, uint thresholdCleaning ){
 	uint i(1);
 	string previousSeq(vec[0].sequence);
-	bool good(false);
+	uint good(1);
+	string temp;
 	while(i<vec.size()){
-		string temp = vec[i].sequence;
+		temp = vec[i].sequence;
 		if (temp == previousSeq){
 			vec[i].sequence = "";
-			good=true;
+			good++;
 		}else{
-			if(not good){
-				vec[i-1].sequence="";
+			if(good<thresholdCleaning){
+				vec[i-good].sequence="";
 			}
+			//~ cout<<good<<endl;
 			previousSeq = temp;
-			good=false;
+			good=1;
 		}
 		++i;
 	}

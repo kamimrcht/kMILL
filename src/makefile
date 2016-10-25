@@ -14,11 +14,14 @@ LDFLAGS=-g
 endif
 
 
-EXEC=kMILL
+EXEC=kMILL pathsCleaner
 
 all: $(EXEC)
 
 kMILL:	main.o	compaction.o	utils.o	readAndSortInputFile.o ograph.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+pathsCleaner:	pathsCleaner.o	compaction.o	utils.o	readAndSortInputFile.o ograph.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 utils.o: 	utils.cpp	utils.h
@@ -33,7 +36,10 @@ readAndSortInputFile.o:	readAndSortInputFile.cpp	readAndSortInputFile.h	compacti
 compaction.o:	compaction.cpp	compaction.h	utils.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-main.o:	main.cpp	compaction.h	readAndSortInputFile.h ograph.o
+main.o:	main.cpp	compaction.h	readAndSortInputFile.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+pathsCleaner.o:	pathsCleaner.cpp	compaction.h	readAndSortInputFile.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
