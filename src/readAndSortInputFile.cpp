@@ -19,17 +19,22 @@ uint64_t transformStringToHash(const string& read){
 }
 
 /* create buckets to store canonical sequences of the reads */
-void createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstream>& outFiles){
+uint createReadBuckets(uint nbBuckets, ifstream& readStructFile, vector <ofstream>& outFiles){
+	uint maxSize(0);
 	string sequence, canonSequence;
 	while (not readStructFile.eof()){
         getline(readStructFile, sequence);
 		getline(readStructFile, sequence);
+		if(sequence.size()>maxSize){
+			maxSize=sequence.size();
+		}
 		canonSequence = getCanonical(sequence);
 		if (not canonSequence.empty()){
 			uint64_t key(transformStringToHash(canonSequence));
 			outFiles[key % nbBuckets] << canonSequence << endl;
 		}
 	}
+	return maxSize;
 }
 
 

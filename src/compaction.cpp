@@ -6,7 +6,6 @@
 #include <unordered_set>
 #include "utils.h"
 #include "compaction.h"
-#include "ograph.h"
 #include <chrono>
 
 

@@ -341,8 +341,8 @@ void sequences2dot(vector<readStruct>& seqV, uint k, unordered_set<uint>& colorN
 	//~ for (auto i = right2seq.begin(); i != right2seq.end(); ++i){
 		//~ cout  << "R "<< i->first << endl;
 	//~ }
-    uint cbeg;
-    uint cend;
+    //~ uint cbeg;
+    //~ uint cend;
      unordered_set<pair<uint,uint>,pair_hash> nadine;
     for(uint i(0);i<seqV.size();++i){
         sequence = seqV[i].sequence;
