@@ -48,7 +48,7 @@ int main(int argc, char ** argv){
 	}else{
 		k=stoi(argv[2]);
 	}
-	string titre("out_k"+to_string(k)+ "_" + getFileName(fileName) +".fa");
+	string titre("out_" + fileName +".fa");
 	ofstream out(titre);
 	fillSortCleanBuckets(nbBuckets, sequencesVec,0);
 	removeReadFiles(nbBuckets);
