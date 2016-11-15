@@ -6,9 +6,12 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "compaction.h"
+#include "binSeq.h"
+
 
 
 using namespace std;
+
 
 
 string getFileName(const string& s) {
@@ -21,11 +24,14 @@ string getFileName(const string& s) {
    return("");
 }
 
+
+
 struct pair_hash {
     inline std::size_t operator()(const std::pair<int,int> & v) const {
         return v.first*31+v.second;
     }
 };
+
 
 
 char revCompChar(char c) {
@@ -36,6 +42,7 @@ char revCompChar(char c) {
 	}
 	return 'A';
 }
+
 
 
 bool isCanonical(const string& seq){

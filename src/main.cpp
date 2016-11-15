@@ -19,7 +19,7 @@ using namespace std;
 
 
 int main(int argc, char ** argv){
-	if (argc < 1){
+	if (argc < 2){
 		cout << "command line: ./kMILL reads.fasta kmax kmin" << endl;
 		return 0;
 	}
@@ -37,18 +37,19 @@ int main(int argc, char ** argv){
 	}
 	uint nbBuckets(1);
 	vector <ofstream> outFiles(nbBuckets);
-	string titre("out_k"+to_string(k)+ "_" + getFileName(fileName) +".fa");
-	ofstream out(titre);
+	
 
 	string sequence,sequence2;
 	vector <readStruct> sequencesVec;
 	openBuckets(outFiles);
 	uint maxSize=createReadBuckets(nbBuckets, readStructFile, outFiles);
-	if(argc<2){
+	if(argc<3){
 		k=maxSize;
 	}else{
 		k=stoi(argv[2]);
 	}
+	string titre("out_k"+to_string(k)+ "_" + getFileName(fileName) +".fa");
+	ofstream out(titre);
 	fillSortCleanBuckets(nbBuckets, sequencesVec,0);
 	removeReadFiles(nbBuckets);
 	setreadStructsIndex(sequencesVec);

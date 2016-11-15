@@ -7,10 +7,18 @@
 #include <unordered_set>
 #include "compaction.h"
 
+
+
 #ifndef UTILS
 #define UTILS
 
+
+
 using namespace std;
+
+
+
+typedef  string sequence;
 
 string getFileName(const string& s);
 bool isCanonical(const string& seq);
