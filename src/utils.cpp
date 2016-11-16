@@ -15,7 +15,6 @@ using namespace std;
 
 
 string getFileName(const string& s) {
-
    char sep = '/';
    size_t i = s.rfind(sep, s.length());
    if (i != string::npos) {
@@ -72,17 +71,6 @@ bool isCanonical(const string& seq){
 	}
 }
 
-string revcompstroptimization;
-
-
-// optimized
-//~ string revComp(const string& s){
-	//~ revcompstroptimization.assign(s.size(),0);
-	//~ for (int i((int)s.length() - 1); i >= 0; i--){
-		//~ revcompstroptimization[s.size()-1-i] = revCompChar(s[i]);
-	//~ }
-	//~ return revcompstroptimization;
-//~ }
 
 
 string revComp(const string& s){
@@ -92,6 +80,7 @@ string revComp(const string& s){
 	}
 	return rc;
 }
+
 
 
 string reverseComplements(const string& seq){

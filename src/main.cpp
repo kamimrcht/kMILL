@@ -19,6 +19,7 @@ using namespace std;
 
 
 int main(int argc, char ** argv){
+	//ARGUMENT PARSING
 	if (argc < 2){
 		cout << "command line: ./kMILL reads.fasta kmax kmin" << endl;
 		return 0;
@@ -37,11 +38,11 @@ int main(int argc, char ** argv){
 	}
 	uint nbBuckets(1);
 	vector <ofstream> outFiles(nbBuckets);
-	
-
 	string sequence,sequence2;
 	vector <readStruct> sequencesVec;
 	openBuckets(outFiles);
+	
+	//SEQUENCES DUPLICATE CLEANING
 	uint maxSize=createReadBuckets(nbBuckets, readStructFile, outFiles);
 	if(argc<3){
 		k=maxSize;
@@ -56,47 +57,29 @@ int main(int argc, char ** argv){
 	cout<<sequencesVec.size()<<endl;
 	auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 	cout<<"Init took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec"<<endl;
-	unordered_set<string> seqsToRemoveInSuff;
-	unordered_set<string> seqsToRemoveInPref;
-	unordered_set<int> readsToRemovePref;
-	unordered_set<int> readsToRemoveSuff;
-	unordered_set<uint> colorNodePref;
-	unordered_set<uint> colorNodeSuff;
-	unordered_map<uint, uint> sizesNode;
+	
+	//SEQUENCES COMPACTION
+	unordered_set<string> seqsToRemoveInSuff,seqsToRemoveInPref;
 	if (k>0) {
-		//MAIN LOOP
 		vector <edge> right;  // vector of canonical suffixes
 		vector <edge> left; //  vector of canonical prefixes
+		//MAIN LOOP
 		do {
-			//~ auto startChrono=chrono::system_clock::now();
 			right={};
 			left={};
-			//~ auto startfor=chrono::system_clock::now();
 			//FILLING
 			string rev,canon;
 			for (uint i(0); i<sequencesVec.size(); ++i){
 				if (sequencesVec[i].sequence.size() >= k){
-					fillPrefVector(left, right, sequencesVec[i], k, readsToRemovePref,rev,canon);
-					fillSuffVector(left, right, sequencesVec[i], k, readsToRemoveSuff,rev,canon);
+					fillPrefVector(left, right, sequencesVec[i], k ,rev,canon);
+					fillSuffVector(left, right, sequencesVec[i], k ,rev,canon);
 				}
 			}
-			//~ auto endFor=chrono::system_clock::now();auto wFor=endFor-startfor;
-			//~ auto startparse=chrono::system_clock::now();
-			
 			//PARSE
-			parseVector(left, right, sequencesVec, k, seqsToRemoveInSuff, seqsToRemoveInPref,  readsToRemovePref, readsToRemoveSuff);
-			//~ auto endparse=chrono::system_clock::now();auto wParse=endparse-startparse;
-			//~ auto end=chrono::system_clock::now();
-			//~ auto waitedFor=end-startChrono;
-			//~ auto waitedForfill=endFor-startfor;
-			//~ auto waitedForparse=endparse-startparse;
-			//~ cout<<"k: "<<k<<": left.size "<<left.size()<<" right.size "<<right.size()<<" Step took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec "<<endl;
-			//~ cout<<" filling took : "<<(chrono::duration_cast<chrono::nanoseconds>(waitedForfill).count())<<" sec "<<endl;
-			//~ cout<<" parsing took : "<<(chrono::duration_cast<chrono::nanoseconds>(waitedForparse).count())<<" sec "<<endl;
-			//~ --k;
+			seqsToRemoveInPref=seqsToRemoveInSuff={};
+			parseVector(left, right, sequencesVec, k, seqsToRemoveInSuff, seqsToRemoveInPref);
 			k-=1;
 		} while (k>min);
-
 		for (uint i(0); i < sequencesVec.size(); ++i){
 			if (not sequencesVec[i].sequence.empty()){
 				out << ">sequence_" + to_string(sequencesVec[i].index) << endl;

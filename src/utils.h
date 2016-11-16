@@ -18,7 +18,9 @@ using namespace std;
 
 
 
-typedef  string sequence;
+typedef  string Sequence;
+
+
 
 string getFileName(const string& s);
 bool isCanonical(const string& seq);

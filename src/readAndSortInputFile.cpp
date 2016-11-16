@@ -57,7 +57,7 @@ void fillSortCleanBuckets(uint nbBuckets, vector <readStruct>& sequencesVec, uin
 		while (not readFile.eof()){
 			getline(readFile, seq);
 			if (not seq.empty()){
-				seqVecFile.push_back({0, seq});
+				seqVecFile.push_back({0, seq,true,true});
 			}
 		}
 		sort(seqVecFile.begin(), seqVecFile.end(), compareRead());

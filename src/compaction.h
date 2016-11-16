@@ -27,6 +27,8 @@ struct edge{
 struct readStruct{
   uint index;
   string sequence;
+  bool takeSuff;
+  bool takePref;
 };
 
 
@@ -57,23 +59,23 @@ struct compareRead2{
 
 edge nPrefix(uint n, uint index, const string& sequence, bool canon);
 edge nSuffix(uint n, uint index, const string& sequence, bool canon);
-vector<edge> removeNotSinglesInLeft(const vector<edge>& vect, unordered_set<string>& seqsToRemoveInPref, unordered_set<string>& seqsToRemoveInSuff, uint k);  /* remove overlaps that are duplicated in vector left, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
-vector<edge> removeNotSinglesInRight(const vector<edge>& vect, unordered_set<string>& seqsToRemoveInPref, unordered_set<string>& seqsToRemoveInSuff, uint k);  /* remove overlaps that are duplicated in vector right, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
-void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove); /* from sequences spotted, get reads' index for reads we do not want the prefix to be present in the next pass */
-void appendListReadsToRemoveSuff(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove, unordered_set<int>& readsToRemove); /* from sequences spotted, get reads' index for reads we do not want the suffix to be present in the next pass */
+vector<edge> removeNotSinglesInLeft(const vector<edge>& vect, unordered_set<string>& seqsToRemoveInPref, unordered_set<string>& seqsToRemoveInSuff);  /* remove overlaps that are duplicated in vector left, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
+vector<edge> removeNotSinglesInRight(const vector<edge>& vect, unordered_set<string>& seqsToRemoveInPref, unordered_set<string>& seqsToRemoveInSuff);  /* remove overlaps that are duplicated in vector right, and spot sequences that should be remove in next pass because they reached their best overlap with a duplicated sequence */
+void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove); /* from sequences spotted, get reads' index for reads we do not want the prefix to be present in the next pass */
+void appendListReadsToRemoveSuff(const vector<edge>& vectL, const vector<edge>& vectR, const unordered_set<string>& seqsToRemove); /* from sequences spotted, get reads' index for reads we do not want the suffix to be present in the next pass */
 bool compareEdgeByString(const edge& seqL, const edge& seqR);
-string compaction(const readStruct& seq1, const readStruct& seq2, uint k, unordered_set<int>& readsToRemovePref, unordered_set<int>& readsToRemoveSuff);  /*  compaction of two unitigs if they have a k-overlap */
-void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k, unordered_set<int>& readsToRemovePref, unordered_set<int>& readsToRemoveSuff);  /*  Recursive func to compact unitigs (if they are sequences or indexes)). If two unitigs are compacted the result replaces one of them, the other becomes "" and keeps the index of its mate. */
-void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k, unordered_set<string>& seqsToRemoveInSuff, unordered_set<string>& seqsToRemoveInPref, unordered_set<int>& readsToRemovePref, unordered_set<int>& readsToRemoveSuff);  /*  checks from the suffixes and prefixes of pairs of unitigs if they can be compacted. Appends overlaps that should be removed in the next pass. */
-void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemovePref);  /* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
-void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemoveSuff);  /* fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs */
+string compaction( readStruct& seq1, const readStruct& seq2, uint k);  /*  compaction of two unitigs if they have a k-overlap */
+void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k);  /*  Recursive func to compact unitigs (if they are sequences or indexes)). If two unitigs are compacted the result replaces one of them, the other becomes "" and keeps the index of its mate. */
+void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k, unordered_set<string>& seqsToRemoveInSuff, unordered_set<string>& seqsToRemoveInPref);  /*  checks from the suffixes and prefixes of pairs of unitigs if they can be compacted. Appends overlaps that should be removed in the next pass. */
+void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, string& rev, string& canonPrefix);  /* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
+void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k);  /* fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs */
 void cleanDuplicatesInreadStructs(vector <readStruct>& vec);  /* remove duplicates in reads*/
 void cleanDuplicatesInreadStructs2(vector <readStruct>& vec,uint lol);  /* remove duplicates in reads*/
 void setreadStructsIndex(vector <readStruct>& vec);  /* give a proper index to reads */
 void initVectofreadStructs(vector <readStruct>& vec, const string& sequence);
 void printReadStructsIndex(vector <readStruct>& vec,const string& outfileName);
-void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemoveSuff,string& rev, string& canon);
-void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, const unordered_set<int>& readsToRemovePref,string& rev, string& canonPrefix);
+void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k,string& rev, string& canon);
+void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k,string& rev, string& canonPrefix);
 
 
 
