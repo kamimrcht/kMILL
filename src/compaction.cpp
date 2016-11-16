@@ -5,12 +5,16 @@
 #include <algorithm>
 #include <unordered_set>
 #include "utils.h"
-#include "compaction.h"
 #include <chrono>
 
 
 
 using namespace std;
+uint nBucketsOverlap(10);
+
+
+
+hash<std::string> strHash;
 
 
 
@@ -246,7 +250,7 @@ string compaction( readStruct& seq1,  readStruct& seq2, uint k){
 			//~ if (readsToRemovePref.unordered_set::count(seq2.index)){
 				//~ readsToRemovePref.insert(seq1.index);
 			//~ }
-			if (not seq2.takePreftod){
+			if (not seq2.takePref){
 				seq1.takePref=false;
 			}else{
 				seq1.takePref=true;
@@ -327,43 +331,48 @@ void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexr
 
 
 /*  checks from the suffixes and prefixes of pairs of unitigs if they can be compacted. Appends overlaps that should be removed in the next pass. */
-void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k, unordered_set<string>& seqsToRemoveInSuff, unordered_set<string>& seqsToRemoveInPref){
+void parseVector(vector<vector<edge>> & left, vector<vector<edge>>& right, vector<readStruct>& readStructsVec, uint k, unordered_set<string>& seqsToRemoveInSuff, unordered_set<string>& seqsToRemoveInPref){
 	uint compac(0);
 	//SORT
-	sort(left.begin(), left.end(), compareEdge());
-	sort(right.begin(), right.end(), compareEdge());
-	//could avoid this
+	//~ sort(left.begin(), left.end(), compareEdge());
+	//~ sort(right.begin(), right.end(), compareEdge());
 	vector<edge> leftSingles;
 	vector<edge> rightSingles;
-	//remove duplicate
-	if (left.size()>1){
-		leftSingles = removeNotSinglesInLeft(left, seqsToRemoveInPref, seqsToRemoveInSuff);
-	} else {
-		leftSingles = left;
-	}
-	if (right.size()>1){
-		rightSingles = removeNotSinglesInRight(right, seqsToRemoveInPref, seqsToRemoveInSuff);
-	} else {
-		rightSingles = right;
-	}
-	//update set
-	appendListReadsToRemovePref(leftSingles, rightSingles, seqsToRemoveInPref, readStructsVec);
-	appendListReadsToRemoveSuff(leftSingles, rightSingles, seqsToRemoveInSuff, readStructsVec);
-	uint indexL(0),indexR(0);
-	//look up for compaction
-	while (indexL < leftSingles.size() and indexR < rightSingles.size()){
-		if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
-			if (leftSingles[indexL].index != rightSingles[indexR].index){
-				compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k);
-				++compac;
-			}
-			++indexL;
-			++indexR;
+	//~ cout<<"go"<<endl;
+	for(uint i(0);i<nBucketsOverlap;++i){
+		//~ cout<<left[i].size()<<" "<<right[i].size()<<endl;
+		sort(left[i].begin(), left[i].end(), compareEdge());
+		sort(right[i].begin(), right[i].end(), compareEdge());
+		//remove duplicate
+		if (left[i].size()>1){
+			leftSingles = removeNotSinglesInLeft(left[i], seqsToRemoveInPref, seqsToRemoveInSuff);
 		} else {
-			if (leftSingles[indexL].sequence < rightSingles[indexR].sequence){
+			leftSingles = left[i];
+		}
+		if (right[i].size()>1){
+			rightSingles = removeNotSinglesInRight(right[i], seqsToRemoveInPref, seqsToRemoveInSuff);
+		} else {
+			rightSingles = right[i];
+		}
+		//update set
+		appendListReadsToRemovePref(leftSingles, rightSingles, seqsToRemoveInPref, readStructsVec);
+		appendListReadsToRemoveSuff(leftSingles, rightSingles, seqsToRemoveInSuff, readStructsVec);
+		uint indexL(0),indexR(0);
+		//look up for compaction
+		while (indexL < leftSingles.size() and indexR < rightSingles.size()){
+			if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
+				if (leftSingles[indexL].index != rightSingles[indexR].index){
+					compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k);
+					++compac;
+				}
 				++indexL;
-			} else {
 				++indexR;
+			} else {
+				if (leftSingles[indexL].sequence < rightSingles[indexR].sequence){
+					++indexL;
+				} else {
+					++indexR;
+				}
 			}
 		}
 	}
@@ -371,15 +380,16 @@ void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& re
 
 
 /* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
-void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, string& rev, string& canonPrefix){
+void fillPrefVector(vector<vector <edge>>& vecLeft, vector <vector <edge>>& vecRight, const readStruct& seq, uint k, string& rev, string& canonPrefix){
 	if (seq.takePref){
 		edge prefix = nPrefix(k, seq.index, seq.sequence, true);
 		canonPrefix = getStrictCanonical2(prefix.sequence,rev);
 		if (not canonPrefix.empty()){ // if is empty, it means the prefix is the rc of itself, we dont we want add it to the vector
 			if (prefix.sequence == canonPrefix){
-				vecLeft.push_back({prefix.index, canonPrefix, true});
+				vecLeft[strHash(canonPrefix)%nBucketsOverlap].push_back({prefix.index, canonPrefix, true});
+				//~ cout<<strHash(canonPrefix)%nBucketsOverlap<<endl;
 			} else {
-				vecRight.push_back({prefix.index, canonPrefix, false});
+				vecRight[strHash(canonPrefix)%nBucketsOverlap].push_back({prefix.index, canonPrefix, false});
 			}
 		}
 	}
@@ -387,15 +397,15 @@ void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readS
 
 
 /* fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs */
-void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, string& rev, string& canonSuffix){
+void fillSuffVector(vector<vector <edge>>& vecLeft, vector <vector <edge>>& vecRight, const readStruct& seq, uint k, string& rev, string& canonSuffix){
 	if (seq.takeSuff){
 		edge suffix = nSuffix(k, seq.index, seq.sequence, true);
 		canonSuffix = getStrictCanonical2(suffix.sequence,rev);
 		if (not canonSuffix.empty()){ // if is empty, it means the suffix is the rc of itself, we dont we want add it to the vector
 			if (suffix.sequence == canonSuffix){
-				vecRight.push_back({suffix.index, canonSuffix, true});
+				vecRight[strHash(canonSuffix)%nBucketsOverlap].push_back({suffix.index, canonSuffix, true});
 			} else {
-				vecLeft.push_back({suffix.index, canonSuffix, false});
+				vecLeft[strHash(canonSuffix)%nBucketsOverlap].push_back({suffix.index, canonSuffix, false});
 			}
 		}
 	}

@@ -15,6 +15,7 @@
 
 
 using namespace std;
+uint nBucketsOverlapmain(1000);
 
 
 
@@ -57,16 +58,17 @@ int main(int argc, char ** argv){
 	cout<<sequencesVec.size()<<endl;
 	auto end=chrono::system_clock::now();auto waitedFor=end-startChrono;
 	cout<<"Init took : "<<(chrono::duration_cast<chrono::seconds>(waitedFor).count())<<" sec"<<endl;
-	
 	//SEQUENCES COMPACTION
 	unordered_set<string> seqsToRemoveInSuff,seqsToRemoveInPref;
 	if (k>0) {
-		vector <edge> right;  // vector of canonical suffixes
-		vector <edge> left; //  vector of canonical prefixes
+		vector <vector<edge>> right(nBucketsOverlapmain);  // vector of canonical suffixes
+		vector <vector<edge>> left(nBucketsOverlapmain); //  vector of canonical prefixes
 		//MAIN LOOP
 		do {
-			right={};
-			left={};
+			for(uint i(0);i<nBucketsOverlapmain;++i){
+				right[i].clear();
+				left[i].clear();
+			}
 			//FILLING
 			string rev,canon;
 			for (uint i(0); i<sequencesVec.size(); ++i){

@@ -66,16 +66,16 @@ void appendListReadsToRemoveSuff(const vector<edge>& vectL, const vector<edge>& 
 bool compareEdgeByString(const edge& seqL, const edge& seqR);
 string compaction( readStruct& seq1, const readStruct& seq2, uint k);  /*  compaction of two unitigs if they have a k-overlap */
 void compactInVector(vector<readStruct>& vec, uint indexreadStruct1, uint indexreadStruct2, uint k);  /*  Recursive func to compact unitigs (if they are sequences or indexes)). If two unitigs are compacted the result replaces one of them, the other becomes "" and keeps the index of its mate. */
-void parseVector(vector<edge>& left, vector<edge>& right, vector<readStruct>& readStructsVec, uint k, unordered_set<string>& seqsToRemoveInSuff, unordered_set<string>& seqsToRemoveInPref);  /*  checks from the suffixes and prefixes of pairs of unitigs if they can be compacted. Appends overlaps that should be removed in the next pass. */
-void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k, string& rev, string& canonPrefix);  /* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
-void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k);  /* fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs */
+void parseVector(vector<vector<edge>> & left, vector<vector<edge>>& right, vector<readStruct>& readStructsVec, uint k, unordered_set<string>& seqsToRemoveInSuff, unordered_set<string>& seqsToRemoveInPref);  /*  checks from the suffixes and prefixes of pairs of unitigs if they can be compacted. Appends overlaps that should be removed in the next pass. */
+void fillPrefVector(vector<vector <edge>>& vecLeft, vector<vector <edge>>& vecRight, const readStruct& seq, uint k, string& rev, string& canonPrefix);  /* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
+void fillSuffVector(vector<vector <edge>>& vecLeft, vector<vector <edge>>& vecRight, const readStruct& seq, uint k);  /* fill vectors of prefixes and suffixes with canonical k-mers coming from suffixes of readStructs */
 void cleanDuplicatesInreadStructs(vector <readStruct>& vec);  /* remove duplicates in reads*/
 void cleanDuplicatesInreadStructs2(vector <readStruct>& vec,uint lol);  /* remove duplicates in reads*/
 void setreadStructsIndex(vector <readStruct>& vec);  /* give a proper index to reads */
 void initVectofreadStructs(vector <readStruct>& vec, const string& sequence);
 void printReadStructsIndex(vector <readStruct>& vec,const string& outfileName);
-void fillSuffVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k,string& rev, string& canon);
-void fillPrefVector(vector <edge>& vecLeft, vector <edge>& vecRight, const readStruct& seq, uint k,string& rev, string& canonPrefix);
+void fillSuffVector(vector<vector <edge>>& vecLeft, vector<vector <edge>>& vecRight, const readStruct& seq, uint k,string& rev, string& canon);
+void fillPrefVector(vector<vector <edge>>& vecLeft, vector<vector <edge>>& vecRight, const readStruct& seq, uint k,string& rev, string& canonPrefix);
 
 
 
