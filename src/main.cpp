@@ -15,7 +15,7 @@
 
 
 using namespace std;
-uint nBucketsOverlapmain(1000);
+uint nBucketsOverlapmain(100);
 
 
 
@@ -52,6 +52,9 @@ int main(int argc, char ** argv){
 	}
 	string titre("out_" + fileName +".fa");
 	ofstream out(titre);
+	if(not out.good()){
+		cout<<"probleme outfile"<<endl;
+	}
 	fillSortCleanBuckets(nbBuckets, sequencesVec,0);
 	removeReadFiles(nbBuckets);
 	setreadStructsIndex(sequencesVec);
@@ -65,6 +68,7 @@ int main(int argc, char ** argv){
 		vector <vector<edge>> left(nBucketsOverlapmain); //  vector of canonical prefixes
 		//MAIN LOOP
 		do {
+			//~ cout<<k<<endl;
 			for(uint i(0);i<nBucketsOverlapmain;++i){
 				right[i].clear();
 				left[i].clear();
@@ -78,6 +82,7 @@ int main(int argc, char ** argv){
 				}
 			}
 			//PARSE
+			//~ cout<<"parse"<<endl;
 			seqsToRemoveInPref=seqsToRemoveInSuff={};
 			parseVector(left, right, sequencesVec, k, seqsToRemoveInSuff, seqsToRemoveInPref);
 			k-=1;

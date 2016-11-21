@@ -10,7 +10,7 @@
 
 
 using namespace std;
-uint nBucketsOverlap(10);
+uint nBucketsOverlap(100);
 
 
 
@@ -115,8 +115,9 @@ void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& 
 	uint i(0);
 	while (i < vectL.size()){
 		if (seqsToRemove.unordered_set::count(vectL[i].sequence)){
-			if (vectL[i].canonical == true){  // prefix
+			if (vectL[i].canonical){  // prefix
 				//~ readsToRemove.insert(vectL[i].index);
+				//~ cout<<vectL[i].index<<end;
 				readStructsVec[vectL[i].index].takePref=false;
 			}
 		}
@@ -125,9 +126,10 @@ void appendListReadsToRemovePref(const vector<edge>& vectL, const vector<edge>& 
 	uint j(0);
 	while (j < vectR.size()){
 		if (seqsToRemove.unordered_set::count(vectR[j].sequence)){
-			if (vectR[j].canonical == false){  // prefix
+			if (not vectR[j].canonical ){  // prefix
 				//~ readsToRemove.insert(vectR[j].index);
-				readStructsVec[vectR[i].index].takePref=false;
+				//~ cout<<vectR[i].index<<endl;
+				readStructsVec[vectR[j].index].takePref=false;
 			}
 		}
 		++j;
@@ -153,7 +155,7 @@ void appendListReadsToRemoveSuff(const vector<edge>& vectL, const vector<edge>& 
 		if (seqsToRemove.unordered_set::count(vectR[j].sequence)){
 			if (vectR[j].canonical == true){  // suffix
 				//~ readsToRemove.insert(vectR[j].index);
-				readStructsVec[vectL[i].index].takeSuff=false;
+				readStructsVec[vectR[j].index].takeSuff=false;
 			}
 		}
 		++j;
@@ -354,14 +356,17 @@ void parseVector(vector<vector<edge>> & left, vector<vector<edge>>& right, vecto
 		} else {
 			rightSingles = right[i];
 		}
+		//~ cout<<"update"<<endl;
 		//update set
 		appendListReadsToRemovePref(leftSingles, rightSingles, seqsToRemoveInPref, readStructsVec);
 		appendListReadsToRemoveSuff(leftSingles, rightSingles, seqsToRemoveInSuff, readStructsVec);
 		uint indexL(0),indexR(0);
 		//look up for compaction
+		//~ cout<<"compaction"<<endl;
 		while (indexL < leftSingles.size() and indexR < rightSingles.size()){
 			if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
 				if (leftSingles[indexL].index != rightSingles[indexR].index){
+					
 					compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k);
 					++compac;
 				}
