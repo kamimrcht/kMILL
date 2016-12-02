@@ -25,7 +25,7 @@ int main(int argc, char ** argv){
 	string fileName = argv[1];
 	uint thresholdCleaning = stoi(argv[2]);
 	ifstream readStructFile(fileName);
-	if(not readStructFile or if readStructFile.eof()){
+	if(not readStructFile or  readStructFile.eof()){
 		cout<<"No such file ..."<<endl;
 		return 1;
 	}
