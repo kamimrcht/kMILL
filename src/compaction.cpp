@@ -366,7 +366,7 @@ void parseVector(vector<vector<edge>> & left, vector<vector<edge>>& right, vecto
 		while (indexL < leftSingles.size() and indexR < rightSingles.size()){
 			if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
 				if (leftSingles[indexL].index != rightSingles[indexR].index){
-					
+
 					compactInVector(readStructsVec, leftSingles[indexL].index, rightSingles[indexR].index, k);
 					++compac;
 				}
@@ -439,7 +439,9 @@ void cleanDuplicatesInreadStructs2(vector <readStruct>& vec, uint thresholdClean
 	uint i(1);
 	string previousSeq(vec[0].sequence);
 	uint good(1);
+	uint indiceLastSeq(0);
 	string temp;
+	cout<<vec.size()<<endl;
 	while(i<vec.size()){
 		temp = vec[i].sequence;
 		if (temp == previousSeq){
@@ -447,13 +449,17 @@ void cleanDuplicatesInreadStructs2(vector <readStruct>& vec, uint thresholdClean
 			good++;
 		}else{
 			if(good<thresholdCleaning){
-				vec[i-good].sequence="";
+				cout<<indiceLastSeq<<endl;
+				vec[indiceLastSeq].sequence="";
 			}
-			//~ cout<<good<<endl;
 			previousSeq = temp;
+			indiceLastSeq=i;
 			good=1;
 		}
 		++i;
+	}
+	if(good< thresholdCleaning){
+		vec[indiceLastSeq].sequence="";
 	}
 }
 
