@@ -25,8 +25,12 @@ int main(int argc, char ** argv){
 	string fileName = argv[1];
 	uint thresholdCleaning = stoi(argv[2]);
 	ifstream readStructFile(fileName);
-	if(not readStructFile or  readStructFile.eof()){
+	if(not readStructFile ){
 		cout<<"No such file ..."<<endl;
+		return 1;
+	}
+	if(readStructFile.peek() ==ifstream::traits_type::eof()){
+		cout<<"Empty file ..."<<endl;
 		return 1;
 	}
 	uint nbBuckets(1);
