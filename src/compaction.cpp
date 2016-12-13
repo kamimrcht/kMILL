@@ -384,6 +384,41 @@ void parseVector(vector<vector<edge>> & left, vector<vector<edge>>& right, vecto
 }
 
 
+void parseVectorTip(vector<vector<edge>> & left, vector<vector<edge>>& right, vector<readStruct>& readStructsVec, uint k, uint minSize){
+	uint compac(0);
+	//SORT
+	vector<edge> leftSingles;
+	vector<edge> rightSingles;
+	for(uint i(0);i<nBucketsOverlap;++i){
+		sort(left[i].begin(), left[i].end(), compareEdge());
+		sort(right[i].begin(), right[i].end(), compareEdge());
+		//remove duplicate
+		left[i].erase( unique( left[i].begin(), left[i].end(), compareEdge() ), left[i].end() );
+		right[i].erase( unique( right[i].begin(), right[i].end(), compareEdge() ), right[i].end() );
+		uint indexL(0),indexR(0);
+		//look up for tips
+		while (indexL < leftSingles.size() and indexR < rightSingles.size()){
+			if (leftSingles[indexL].sequence == rightSingles[indexR].sequence){
+				++indexL;
+				++indexR;
+			} else {
+				if (leftSingles[indexL].sequence < rightSingles[indexR].sequence){
+					++indexL;
+					if(leftSingles[indexL].sequence.size()<minSize){
+						readStructsVec[leftSingles[indexL].index].sequence="";
+					}
+				} else {
+					++indexR;
+					if(rightSingles[indexR].sequence.size()<minSize){
+						readStructsVec[rightSingles[indexR].index].sequence="";
+					}
+				}
+			}
+		}
+	}
+}
+
+
 /* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
 void fillPrefVector(vector<vector <edge>>& vecLeft, vector <vector <edge>>& vecRight, const readStruct& seq, uint k, string& rev, string& canonPrefix){
 	if (seq.takePref){

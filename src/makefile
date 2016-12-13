@@ -14,14 +14,17 @@ LDFLAGS=-g
 endif
 
 
-EXEC=kMILL pathsCleaner
+EXEC=kMILL sequencesCleaner tipCleaner
 
 all: $(EXEC)
 
-kMILL:	main.o	compaction.o	utils.o	readAndSortInputFile.o 
+kMILL:	kmill.o	compaction.o	utils.o	readAndSortInputFile.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-pathsCleaner:	pathsCleaner.o	compaction.o	utils.o	readAndSortInputFile.o 
+sequencesCleaner:	sequencesCleaner.o	compaction.o	utils.o	readAndSortInputFile.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+tipCleaner:	tipCleaner.o	compaction.o	utils.o	readAndSortInputFile.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 utils.o: 	utils.cpp	utils.h
@@ -34,10 +37,13 @@ readAndSortInputFile.o:	readAndSortInputFile.cpp	readAndSortInputFile.h	compacti
 compaction.o:	compaction.cpp	compaction.h	utils.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-main.o:	main.cpp	compaction.h	readAndSortInputFile.h
+kmill.o:	kmill.cpp	compaction.h	readAndSortInputFile.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-pathsCleaner.o:	pathsCleaner.cpp	compaction.h	readAndSortInputFile.h
+sequencesCleaner.o:	sequencesCleaner.cpp	compaction.h	readAndSortInputFile.h
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+tipCleaner.o:	tipCleaner.cpp	compaction.h	readAndSortInputFile.h
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:

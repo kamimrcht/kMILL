@@ -76,6 +76,7 @@ void initVectofreadStructs(vector <readStruct>& vec, const string& sequence);
 void printReadStructsIndex(vector <readStruct>& vec,const string& outfileName);
 void fillSuffVector(vector<vector <edge>>& vecLeft, vector<vector <edge>>& vecRight, const readStruct& seq, uint k,string& rev, string& canon);
 void fillPrefVector(vector<vector <edge>>& vecLeft, vector<vector <edge>>& vecRight, const readStruct& seq, uint k,string& rev, string& canonPrefix);
+void parseVectorTip(vector<vector<edge>> & left, vector<vector<edge>>& right, vector<readStruct>& readStructsVec, uint k, uint minSize);
 
 
 
