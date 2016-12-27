@@ -42,7 +42,7 @@ int main(int argc, char ** argv){
 
 	//SEQUENCES DUPLICATE CLEANING
 	uint maxSize=createReadBuckets(nbBuckets, readStructFile, outFiles);
-	string titre("out_" + fileName +".fa");
+	string titre("tiped.fa");
 	ofstream out(titre);
 	if(not out.good()){
 		cout<<"probleme outfile"<<endl;

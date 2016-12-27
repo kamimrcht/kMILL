@@ -10,7 +10,7 @@
 
 
 using namespace std;
-uint nBucketsOverlap(100);
+uint nBucketsOverlap(1);
 
 
 
@@ -387,14 +387,62 @@ void parseVector(vector<vector<edge>> & left, vector<vector<edge>>& right, vecto
 void parseVectorTip(vector<vector<edge>> & left, vector<vector<edge>>& right, vector<readStruct>& readStructsVec, uint k, uint minSize){
 	uint compac(0);
 	//SORT
-	vector<edge> leftSingles;
-	vector<edge> rightSingles;
-	for(uint i(0);i<nBucketsOverlap;++i){
-		sort(left[i].begin(), left[i].end(), compareEdge());
-		sort(right[i].begin(), right[i].end(), compareEdge());
+	vector<edge> leftSingles,rightSingles;
+	vector<bool> leftIsSingles,rightIsSingles;
+	for(uint j(0);j<nBucketsOverlap;++j){
+		leftSingles=rightSingles={};
+		leftIsSingles=rightIsSingles={};
+		sort(left[j].begin(), left[j].end(), compareEdge());
+		sort(right[j].begin(), right[j].end(), compareEdge());
 		//remove duplicate
-		left[i].erase( unique( left[i].begin(), left[i].end(), compareEdge() ), left[i].end() );
-		right[i].erase( unique( right[i].begin(), right[i].end(), compareEdge() ), right[i].end() );
+		uint i(1);
+		if(left[j].size()>0){
+			leftSingles.push_back(left[j][0]);
+			//~ if(left[j].size()>1){
+				//~ if(left[j][1].sequence==left[j][0].sequence){
+					//~ leftIsSingles.push_back(false);
+				//~ }else{
+					//~ leftIsSingles.push_back(true);
+				//~ }
+			//~ }else{
+				//~ leftIsSingles.push_back(true);
+			//~ }
+			bool isSingle(true);
+			for(; i<left[j].size();++i){
+				if(left[j][i].sequence!=left[j][i-1].sequence){
+					leftSingles.push_back(left[j][i]);
+					leftIsSingles.push_back(isSingle);
+					isSingle=true;
+				}else{
+					isSingle=false;
+				}
+			}
+			leftIsSingles.push_back(isSingle);
+		}
+		if(right[j].size()>0){
+			i=1;
+			rightSingles.push_back(right[j][0]);
+			//~ if(right[j].size()>1){
+				//~ if(right[j][1].sequence==right[j][0].sequence){
+					//~ rightIsSingles.push_back(false);
+				//~ }else{
+					//~ rightIsSingles.push_back(true);
+				//~ }
+			//~ }else{
+				//~ rightIsSingles.push_back(true);
+			//~ }
+			bool isSingle(true);
+			for(; i<right[j].size();++i){
+				if(right[j][i].sequence!=right[j][i-1].sequence){
+					rightSingles.push_back(right[j][i]);
+					rightIsSingles.push_back(isSingle);
+					isSingle=true;
+				}else{
+					isSingle=false;
+				}
+			}
+			rightIsSingles.push_back(isSingle);
+		}
 		uint indexL(0),indexR(0);
 		//look up for tips
 		while (indexL < leftSingles.size() and indexR < rightSingles.size()){
@@ -403,20 +451,38 @@ void parseVectorTip(vector<vector<edge>> & left, vector<vector<edge>>& right, ve
 				++indexR;
 			} else {
 				if (leftSingles[indexL].sequence < rightSingles[indexR].sequence){
-					++indexL;
-					if(leftSingles[indexL].sequence.size()<minSize){
+					if(leftIsSingles[indexL] and readStructsVec[leftSingles[indexL].index].sequence.size()<minSize){
 						readStructsVec[leftSingles[indexL].index].sequence="";
+						compac++;
 					}
+					++indexL;
 				} else {
-					++indexR;
-					if(rightSingles[indexR].sequence.size()<minSize){
+					if(rightIsSingles[indexR] and readStructsVec[rightSingles[indexR].index].sequence.size()<minSize){
 						readStructsVec[rightSingles[indexR].index].sequence="";
+						compac++;
 					}
+					++indexR;
 				}
 			}
 		}
+		while (indexL < leftSingles.size()){
+			if(leftIsSingles[indexL] and readStructsVec[leftSingles[indexL].index].sequence.size()<minSize){
+				readStructsVec[leftSingles[indexL].index].sequence="";
+				compac++;
+			}
+			++indexL;
+		}
+		while (indexR < rightSingles.size()){
+			if(rightIsSingles[indexR] and readStructsVec[rightSingles[indexR].index].sequence.size()<minSize){
+				readStructsVec[rightSingles[indexR].index].sequence="";
+				compac++;
+			}
+			++indexR;
+		}
 	}
+	cout<<compac<<endl;
 }
+
 
 
 /* fill vectors of prefixes and suffixes with canonical k-mers coming from prefixes of readStructs */
