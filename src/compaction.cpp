@@ -388,36 +388,27 @@ void parseVectorTip(vector<vector<edge>> & left, vector<vector<edge>>& right, ve
 	uint compac(0);
 	//SORT
 	vector<edge> leftSingles,rightSingles;
-	vector<bool> leftIsSingles,rightIsSingles;
+	//~ vector<bool> leftIsSingles,rightIsSingles;
 	for(uint j(0);j<nBucketsOverlap;++j){
 		leftSingles=rightSingles={};
-		leftIsSingles=rightIsSingles={};
+		//~ leftIsSingles=rightIsSingles={};
 		sort(left[j].begin(), left[j].end(), compareEdge());
 		sort(right[j].begin(), right[j].end(), compareEdge());
 		//remove duplicate
 		uint i(1);
 		if(left[j].size()>0){
 			leftSingles.push_back(left[j][0]);
-			//~ if(left[j].size()>1){
-				//~ if(left[j][1].sequence==left[j][0].sequence){
-					//~ leftIsSingles.push_back(false);
-				//~ }else{
-					//~ leftIsSingles.push_back(true);
-				//~ }
-			//~ }else{
-				//~ leftIsSingles.push_back(true);
-			//~ }
 			bool isSingle(true);
 			for(; i<left[j].size();++i){
 				if(left[j][i].sequence!=left[j][i-1].sequence){
 					leftSingles.push_back(left[j][i]);
-					leftIsSingles.push_back(isSingle);
+					//~ leftIsSingles.push_back(isSingle);
 					isSingle=true;
 				}else{
 					isSingle=false;
 				}
 			}
-			leftIsSingles.push_back(isSingle);
+			//~ leftIsSingles.push_back(isSingle);
 		}
 		if(right[j].size()>0){
 			i=1;
@@ -435,13 +426,13 @@ void parseVectorTip(vector<vector<edge>> & left, vector<vector<edge>>& right, ve
 			for(; i<right[j].size();++i){
 				if(right[j][i].sequence!=right[j][i-1].sequence){
 					rightSingles.push_back(right[j][i]);
-					rightIsSingles.push_back(isSingle);
+					//~ rightIsSingles.push_back(isSingle);
 					isSingle=true;
 				}else{
 					isSingle=false;
 				}
 			}
-			rightIsSingles.push_back(isSingle);
+			//~ rightIsSingles.push_back(isSingle);
 		}
 		uint indexL(0),indexR(0);
 		//look up for tips
@@ -451,13 +442,13 @@ void parseVectorTip(vector<vector<edge>> & left, vector<vector<edge>>& right, ve
 				++indexR;
 			} else {
 				if (leftSingles[indexL].sequence < rightSingles[indexR].sequence){
-					if(leftIsSingles[indexL] and readStructsVec[leftSingles[indexL].index].sequence.size()<minSize){
+					if(readStructsVec[leftSingles[indexL].index].sequence.size()<minSize){
 						readStructsVec[leftSingles[indexL].index].sequence="";
 						compac++;
 					}
 					++indexL;
 				} else {
-					if(rightIsSingles[indexR] and readStructsVec[rightSingles[indexR].index].sequence.size()<minSize){
+					if(readStructsVec[rightSingles[indexR].index].sequence.size()<minSize){
 						readStructsVec[rightSingles[indexR].index].sequence="";
 						compac++;
 					}
@@ -466,14 +457,14 @@ void parseVectorTip(vector<vector<edge>> & left, vector<vector<edge>>& right, ve
 			}
 		}
 		while (indexL < leftSingles.size()){
-			if(leftIsSingles[indexL] and readStructsVec[leftSingles[indexL].index].sequence.size()<minSize){
+			if(readStructsVec[leftSingles[indexL].index].sequence.size()<minSize){
 				readStructsVec[leftSingles[indexL].index].sequence="";
 				compac++;
 			}
 			++indexL;
 		}
 		while (indexR < rightSingles.size()){
-			if(rightIsSingles[indexR] and readStructsVec[rightSingles[indexR].index].sequence.size()<minSize){
+			if(readStructsVec[rightSingles[indexR].index].sequence.size()<minSize){
 				readStructsVec[rightSingles[indexR].index].sequence="";
 				compac++;
 			}
